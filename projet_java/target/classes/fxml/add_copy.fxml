@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.libraryms.controller.AddCopyController" spacing="10" alignment="CENTER" style="-fx-padding:20; -fx-background-color: white;">
+
+    <Label text="Add Copies" style="-fx-font-size:16; -fx-font-weight:bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" prefWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Book:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="bookCombo" promptText="Select book" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Number of copies:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="copiesField" promptText="1" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Location:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="locationField" promptText="Main Shelf" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#cancel"/>
+        <Button text="Add" onAction="#addCopies" styleClass="btn-primary"/>
+    </HBox>
+
+</VBox>
