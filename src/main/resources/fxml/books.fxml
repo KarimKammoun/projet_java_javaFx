@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.libraryms.controller.BooksController"
+      style="-fx-background-color: #f8f9fa;" spacing="20">
+
+    <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
+        <Label text="Books Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <Button fx:id="addBookBtn" text="Add Book" styleClass="btn-primary" onAction="#openAddBook"/>
+    </HBox>
+
+    <VBox spacing="10" style="-fx-padding: 0 40;">
+        <TableView fx:id="booksTable" prefHeight="500">
+            <columns>
+                <TableColumn text="ISBN" prefWidth="150"/>
+                <TableColumn text="Title" prefWidth="250"/>
+                <TableColumn text="Author" prefWidth="180"/>
+                <TableColumn text="Category" prefWidth="120"/>
+                <TableColumn text="Copies" prefWidth="80"/>
+                <TableColumn text="Available" prefWidth="80"/>
+                <TableColumn text="Actions" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>
