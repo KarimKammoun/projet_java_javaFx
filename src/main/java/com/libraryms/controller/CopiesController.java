@@ -2,14 +2,21 @@ package com.libraryms.controller;
 
 import com.libraryms.util.DatabaseUtil;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class CopiesController {
 
     @FXML private TableView<Copy> copiesTable;
+    @FXML private TextField searchField;
+
+    private ObservableList<Copy> masterData;
 
     @FXML
     private void initialize() {
@@ -20,6 +27,23 @@ public class CopiesController {
         ((TableColumn<Copy, String>) cols.get(3)).setCellValueFactory(new PropertyValueFactory<>("status"));
         ((TableColumn<Copy, String>) cols.get(4)).setCellValueFactory(new PropertyValueFactory<>("location"));
         loadCopies();
+
+        FilteredList<Copy> filtered = new FilteredList<>(masterData != null ? masterData : FXCollections.observableArrayList(), p -> true);
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            var lower = newVal == null ? "" : newVal.toLowerCase();
+            filtered.setPredicate(copy -> {
+                if (lower.isEmpty()) return true;
+                if (copy.getCopyId() != null && copy.getCopyId().toLowerCase().contains(lower)) return true;
+                if (copy.getIsbn() != null && copy.getIsbn().toLowerCase().contains(lower)) return true;
+                if (copy.getTitle() != null && copy.getTitle().toLowerCase().contains(lower)) return true;
+                if (copy.getStatus() != null && copy.getStatus().toLowerCase().contains(lower)) return true;
+                if (copy.getLocation() != null && copy.getLocation().toLowerCase().contains(lower)) return true;
+                return false;
+            });
+        });
+        SortedList<Copy> sorted = new SortedList<>(filtered);
+        sorted.comparatorProperty().bind(copiesTable.comparatorProperty());
+        copiesTable.setItems(sorted);
     }
 
     private void loadCopies() {
@@ -41,7 +65,8 @@ public class CopiesController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        copiesTable.setItems(list);
+        masterData = list;
+        copiesTable.setItems(masterData);
     }
 
     @FXML

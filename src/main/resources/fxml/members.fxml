@@ -13,6 +13,9 @@
     </HBox>
 
     <VBox spacing="10" style="-fx-padding: 0 40;">
+        <HBox spacing="10">
+            <TextField fx:id="searchField" promptText="Search members..." HBox.hgrow="ALWAYS"/>
+        </HBox>
         <TableView fx:id="membersTable" prefHeight="500">
             <columns>
                 <TableColumn text="Phone" prefWidth="150"/>

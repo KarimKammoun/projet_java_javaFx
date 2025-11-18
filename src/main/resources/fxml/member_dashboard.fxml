@@ -42,10 +42,7 @@
     <!-- Search & Filters -->
     <VBox spacing="10" style="-fx-padding: 0 40;">
         <TextField promptText="Search by title or author..." style="-fx-pref-height: 50; -fx-background-radius: 12;"/>
-        <HBox spacing="10">
-            <Button text="All Categories" styleClass="btn-primary"/>
-            <Button text="Programming" styleClass="btn-primary"/>
-        </HBox>
+        <!-- Category buttons removed (placeholders) -->
     </VBox>
 
     <!-- Books Grid -->
@@ -60,7 +57,6 @@
                 <Label text="Clean Code" style="-fx-font-weight: bold;"/>
                 <Label text="Robert C. Martin" style="-fx-text-fill: #6c757d;"/>
                 <Label text="Available: 3/5" style="-fx-text-fill: #28a745;"/>
-                <Button text="Borrow Book" styleClass="btn-primary"/>
             </VBox>
             <!-- ... -->
         </HBox>

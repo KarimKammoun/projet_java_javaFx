@@ -10,7 +10,6 @@
     <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
         <Label text="Settings" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
         <HBox HBox.hgrow="ALWAYS"/>
-        <Button text="Save Changes" styleClass="btn-primary"/>
     </HBox>
 
     <VBox spacing="20" style="-fx-padding: 0 40;">
@@ -43,8 +42,6 @@
 
         <VBox spacing="10">
             <Label text="Database Backup" style="-fx-font-weight: bold;"/>
-            <Button text="Export Data" styleClass="btn-primary"/>
-            <Button text="Import Data" styleClass="btn-primary"/>
         </VBox>
     </VBox>
 </VBox>

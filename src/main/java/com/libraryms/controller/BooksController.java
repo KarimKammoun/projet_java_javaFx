@@ -2,14 +2,21 @@ package com.libraryms.controller;
 
 import com.libraryms.util.DatabaseUtil;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class BooksController {
 
     @FXML private TableView<Book> booksTable;
+    @FXML private TextField searchField;
+
+    private ObservableList<Book> masterData;
 
     @FXML
     private void initialize() {
@@ -21,6 +28,24 @@ public class BooksController {
         ((TableColumn<Book, Integer>) cols.get(4)).setCellValueFactory(new PropertyValueFactory<>("totalCopies"));
         ((TableColumn<Book, Integer>) cols.get(5)).setCellValueFactory(new PropertyValueFactory<>("availableCopies"));
         loadBooks();
+
+        FilteredList<Book> filtered = new FilteredList<>(masterData != null ? masterData : FXCollections.observableArrayList(), p -> true);
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            var lower = newVal == null ? "" : newVal.toLowerCase();
+            filtered.setPredicate(book -> {
+                if (lower.isEmpty()) return true;
+                if (book.getIsbn() != null && book.getIsbn().toLowerCase().contains(lower)) return true;
+                if (book.getTitle() != null && book.getTitle().toLowerCase().contains(lower)) return true;
+                if (book.getAuthor() != null && book.getAuthor().toLowerCase().contains(lower)) return true;
+                if (book.getCategory() != null && book.getCategory().toLowerCase().contains(lower)) return true;
+                if (String.valueOf(book.getTotalCopies()).contains(lower)) return true;
+                if (String.valueOf(book.getAvailableCopies()).contains(lower)) return true;
+                return false;
+            });
+        });
+        SortedList<Book> sorted = new SortedList<>(filtered);
+        sorted.comparatorProperty().bind(booksTable.comparatorProperty());
+        booksTable.setItems(sorted);
     }
 
     @FXML
@@ -59,7 +84,8 @@ public class BooksController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        booksTable.setItems(list);
+        masterData = list;
+        booksTable.setItems(masterData);
     }
 
     public static class Book {

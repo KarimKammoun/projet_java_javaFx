@@ -2,9 +2,13 @@ package com.libraryms.controller;
 
 import com.libraryms.util.DatabaseUtil;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.LocalDate;
@@ -12,6 +16,9 @@ import java.time.LocalDate;
 public class BorrowingsController {
 
     @FXML private TableView<BorrowingAdmin> borrowingsTable;
+    @FXML private TextField searchField;
+
+    private ObservableList<BorrowingAdmin> masterData;
 
     @FXML
     private void initialize() {
@@ -23,6 +30,24 @@ public class BorrowingsController {
         ((TableColumn<BorrowingAdmin, LocalDate>) cols.get(4)).setCellValueFactory(new PropertyValueFactory<>("dueDate"));
         ((TableColumn<BorrowingAdmin, String>) cols.get(5)).setCellValueFactory(new PropertyValueFactory<>("status"));
         loadBorrowings();
+
+        FilteredList<BorrowingAdmin> filtered = new FilteredList<>(masterData != null ? masterData : FXCollections.observableArrayList(), p -> true);
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            var lower = newVal == null ? "" : newVal.toLowerCase();
+            filtered.setPredicate(b -> {
+                if (lower.isEmpty()) return true;
+                if (String.valueOf(b.getId()).contains(lower)) return true;
+                if (b.getCopyId() != null && b.getCopyId().toLowerCase().contains(lower)) return true;
+                if (b.getMemberName() != null && b.getMemberName().toLowerCase().contains(lower)) return true;
+                if (b.getBorrowDate() != null && b.getBorrowDate().toString().toLowerCase().contains(lower)) return true;
+                if (b.getDueDate() != null && b.getDueDate().toString().toLowerCase().contains(lower)) return true;
+                if (b.getStatus() != null && b.getStatus().toLowerCase().contains(lower)) return true;
+                return false;
+            });
+        });
+        SortedList<BorrowingAdmin> sorted = new SortedList<>(filtered);
+        sorted.comparatorProperty().bind(borrowingsTable.comparatorProperty());
+        borrowingsTable.setItems(sorted);
     }
 
     private void loadBorrowings() {
@@ -53,7 +78,8 @@ public class BorrowingsController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        borrowingsTable.setItems(list);
+        masterData = list;
+        borrowingsTable.setItems(masterData);
     }
 
     @FXML

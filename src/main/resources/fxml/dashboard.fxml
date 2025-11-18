@@ -8,25 +8,9 @@
       fx:controller="com.libraryms.controller.DashboardController"
       style="-fx-background-color: #f8f9fa;" spacing="20">
 
-    <!-- Header -->
-    <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
-        <Label text="LibraryMS" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #0d6efd;"/>
-        <Label text="Admin Panel" style="-fx-text-fill: #6c757d;"/>
-        <HBox HBox.hgrow="ALWAYS"/>
-        <Label text="Super Admin" style="-fx-font-weight: bold;"/>
-        <Button text="Logout" styleClass="btn-primary" onAction="#logout"/>
-    </HBox>
 
     <HBox spacing="20" style="-fx-padding: 0 40;">
-        <!-- Sidebar -->
-        <VBox styleClass="sidebar" prefWidth="250" spacing="10">
-            <Button text="Dashboard" styleClass="nav-btn active" onAction="#showDashboard"/>
-            <Button text="Members" styleClass="nav-btn" onAction="#showMembers"/>
-            <Button text="Books" styleClass="nav-btn" onAction="#showBooks"/>
-            <Button text="Copies" styleClass="nav-btn" onAction="#showCopies"/>
-            <Button text="Borrowings" styleClass="nav-btn" onAction="#showBorrowings"/>
-            <Button text="Settings" styleClass="nav-btn" onAction="#showSettings"/>
-        </VBox>
+ 
 
         <!-- Content -->
         <VBox VBox.vgrow="ALWAYS" spacing="20" style="-fx-padding: 20;">

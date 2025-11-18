@@ -41,12 +41,7 @@
         </VBox>
     </HBox>
 
-    <!-- Filters -->
-    <HBox spacing="10" style="-fx-padding: 0 40;">
-        <Button text="Active (2)" styleClass="btn-primary"/>
-        <Button text="Completed (0)" styleClass="btn-primary"/>
-        <Button text="All (2)" styleClass="btn-primary"/>
-    </HBox>
+    <!-- Filters (removed placeholder buttons) -->
 
     <!-- Borrowings Cards -->
     <HBox spacing="20" style="-fx-padding: 0 40;">
