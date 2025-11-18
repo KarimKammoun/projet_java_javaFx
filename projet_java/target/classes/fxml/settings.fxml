@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.libraryms.controller.SettingsController"
+      style="-fx-background-color: #f8f9fa;" spacing="20">
+
+    <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
+        <Label text="Settings" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <Button text="Save Changes" styleClass="btn-primary"/>
+    </HBox>
+
+    <VBox spacing="20" style="-fx-padding: 0 40;">
+        <VBox spacing="10">
+            <Label text="Library Name" style="-fx-font-weight: bold;"/>
+            <TextField text="LibraryMS" prefWidth="400"/>
+        </VBox>
+
+        <VBox spacing="10">
+            <Label text="Borrow Duration (days)" style="-fx-font-weight: bold;"/>
+            <TextField text="14" prefWidth="100"/>
+        </VBox>
+
+        <VBox spacing="10">
+            <Label text="Fine per Day (TND)" style="-fx-font-weight: bold;"/>
+            <TextField text="2.0" prefWidth="100"/>
+        </VBox>
+
+        <VBox spacing="10">
+            <Label text="Max Borrow Limit - Standard" style="-fx-font-weight: bold;"/>
+            <TextField text="3" prefWidth="100"/>
+        </VBox>
+
+        <VBox spacing="10">
+            <Label text="Max Borrow Limit - Premium" style="-fx-font-weight: bold;"/>
+            <TextField text="5" prefWidth="100"/>
+        </VBox>
+
+        <Separator/>
+
+        <VBox spacing="10">
+            <Label text="Database Backup" style="-fx-font-weight: bold;"/>
+            <Button text="Export Data" styleClass="btn-primary"/>
+            <Button text="Import Data" styleClass="btn-primary"/>
+        </VBox>
+    </VBox>
+</VBox>
