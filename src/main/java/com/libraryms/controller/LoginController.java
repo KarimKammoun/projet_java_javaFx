@@ -3,6 +3,7 @@ package com.libraryms.controller;
 import com.libraryms.util.DatabaseUtil;
 import com.libraryms.util.SceneManager;
 import com.libraryms.util.Session;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -27,12 +28,12 @@ public class LoginController {
             }
             loginAsAdmin(emailOrPhone, password);
         } else {
-            // Member login: phone only (no password check)
-            if (emailOrPhone.isEmpty()) {
-                new Alert(Alert.AlertType.WARNING, "Veuillez remplir le numéro de téléphone").show();
+            // Member login: phone and password required
+            if (emailOrPhone.isEmpty() || password.isEmpty()) {
+                new Alert(Alert.AlertType.WARNING, "Veuillez remplir le téléphone et le mot de passe").show();
                 return;
             }
-            loginAsMember(emailOrPhone);
+            loginAsMember(emailOrPhone, password);
         }
     }
 
@@ -61,17 +62,23 @@ public class LoginController {
         }
     }
 
-    private void loginAsMember(String phone) {
+    private void loginAsMember(String phone, String password) {
         try (var conn = DatabaseUtil.connect();
-             var stmt = conn.prepareStatement("SELECT phone, name, email FROM users WHERE phone = ?")) {
+             var stmt = conn.prepareStatement("SELECT phone, name, email, password FROM users WHERE phone = ?")) {
             stmt.setString(1, phone);
             var rs = stmt.executeQuery();
             if (rs.next()) {
-                Session.setAdmin(false);
-                Session.setEmail(rs.getString("email"));
-                Session.setName(rs.getString("name"));
-                Session.setPhone(rs.getString("phone"));
-                SceneManager.loadScene("/fxml/main_layout.fxml");
+                String storedHashedPassword = rs.getString("password");
+                // Verify the password against the hashed password in the DB
+                if (storedHashedPassword != null && BCrypt.verifyer().verify(password.toCharArray(), storedHashedPassword).verified) {
+                    Session.setAdmin(false);
+                    Session.setEmail(rs.getString("email"));
+                    Session.setName(rs.getString("name"));
+                    Session.setPhone(rs.getString("phone"));
+                    SceneManager.loadScene("/fxml/main_layout.fxml");
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Mot de passe incorrect").show();
+                }
             } else {
                 new Alert(Alert.AlertType.ERROR, "Membre non trouvé").show();
             }

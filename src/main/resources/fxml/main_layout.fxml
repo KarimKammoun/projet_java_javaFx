@@ -13,7 +13,6 @@
             <Button fx:id="btnDashboard" text="Dashboard" styleClass="nav-btn" onAction="#showDashboard"/>
             <Button fx:id="btnMembers" text="Members" styleClass="nav-btn" onAction="#showMembers"/>
             <Button fx:id="btnBooks" text="Books" styleClass="nav-btn" onAction="#showBooks"/>
-            <Button fx:id="btnCopies" text="Copies" styleClass="nav-btn" onAction="#showCopies"/>
             <Button fx:id="btnBorrowings" text="Borrowings" styleClass="nav-btn" onAction="#showBorrowings"/>
             <Button fx:id="btnSettings" text="Settings" styleClass="nav-btn" onAction="#showSettings"/>
             

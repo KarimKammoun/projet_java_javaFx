@@ -9,6 +9,7 @@
     <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
         <Label text="Copies Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
         <HBox HBox.hgrow="ALWAYS"/>
+        <Button fx:id="editCopyBtn" text="Edit Selected" styleClass="btn-secondary" onAction="#openEditCopy"/>
         <Button fx:id="addCopyBtn" text="Add Copy" styleClass="btn-primary" onAction="#openAddCopy"/>
     </HBox>
 
@@ -23,7 +24,6 @@
                 <TableColumn text="Title" prefWidth="250"/>
                 <TableColumn text="Status" prefWidth="100"/>
                 <TableColumn text="Location" prefWidth="120"/>
-                <TableColumn text="Actions" prefWidth="100"/>
             </columns>
         </TableView>
     </VBox>

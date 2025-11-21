@@ -11,7 +11,7 @@ import javafx.scene.layout.AnchorPane;
 public class MainLayoutController {
 
     @FXML private AnchorPane contentPane;
-    @FXML private Button btnDashboard, btnMembers, btnBooks, btnCopies, btnBorrowings, btnSettings;
+    @FXML private Button btnDashboard, btnMembers, btnBooks, btnBorrowings, btnSettings;
 
     @FXML
     private void initialize() {
@@ -35,7 +35,6 @@ public class MainLayoutController {
     @FXML private void showDashboard() { loadIntoContent("/fxml/dashboard.fxml"); }
     @FXML private void showMembers() { loadIntoContent("/fxml/members.fxml"); }
     @FXML private void showBooks() { loadIntoContent("/fxml/books.fxml"); }
-    @FXML private void showCopies() { loadIntoContent("/fxml/copies.fxml"); }
     @FXML private void showBorrowings() { loadIntoContent("/fxml/borrowings.fxml"); }
     @FXML private void showSettings() { loadIntoContent("/fxml/settings.fxml"); }
 
@@ -43,11 +42,8 @@ public class MainLayoutController {
 
     @FXML
     private void logout() {
-        // clear session
-        Session.setAdmin(false);
-        Session.setEmail(null);
-        Session.setName(null);
-        Session.setPhone(null);
+        // Clear session and redirect to login
+        Session.logout();
         SceneManager.loadScene("/fxml/login.fxml");
     }
 }

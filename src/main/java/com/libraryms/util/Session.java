@@ -19,4 +19,15 @@ public final class Session {
 
     public static String getPhone() { return phone; }
     public static void setPhone(String p) { phone = p; }
+
+    public static boolean isLoggedIn() {
+        return (admin && email != null) || (!admin && phone != null);
+    }
+
+    public static void logout() {
+        admin = false;
+        email = null;
+        name = null;
+        phone = null;
+    }
 }

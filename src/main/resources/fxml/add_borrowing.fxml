@@ -14,14 +14,20 @@
             <ColumnConstraints hgrow="ALWAYS"/>
         </columnConstraints>
 
-        <Label text="Copy:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="copyCombo" promptText="Select copy" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Borrowing ID (for edit):" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <HBox spacing="8" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <TextField fx:id="borrowingIdField" promptText="Borrowing ID" HBox.hgrow="ALWAYS"/>
+            <Button text="Load" onAction="#loadById"/>
+        </HBox>
 
-        <Label text="Member:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="memberCombo" promptText="Select member" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="Book ISBN:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="bookIdField" promptText="Enter book ISBN" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-        <Label text="Due Date:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <DatePicker fx:id="dueDatePicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Member ID:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="memberIdField" promptText="Enter member ID (numeric)" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Due Date:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="dueDatePicker" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">

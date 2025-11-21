@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class BooksController {
@@ -63,6 +65,56 @@ public class BooksController {
             loadBooks();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML private Button editBookBtn;
+    @FXML private Button deleteBookBtn;
+
+    @FXML
+    private void openEditBook() {
+        var dialog = new javafx.scene.control.TextInputDialog();
+        dialog.setTitle("Edit Book");
+        dialog.setHeaderText("Enter ISBN to load for editing");
+        dialog.setContentText("ISBN:");
+        var res = dialog.showAndWait();
+        if (res.isPresent() && !res.get().trim().isEmpty()) {
+            String isbn = res.get().trim();
+            try {
+                var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/add_book.fxml"));
+                javafx.scene.Parent root = loader.load();
+                var controller = loader.getController();
+                if (controller instanceof com.libraryms.controller.AddBookController) {
+                    ((com.libraryms.controller.AddBookController) controller).loadForEdit(isbn);
+                }
+                var scene = new javafx.scene.Scene(root);
+                var stage = new javafx.stage.Stage();
+                stage.setTitle("Edit Book - " + isbn);
+                stage.setScene(scene);
+                stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+                loadBooks();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    private void deleteSelectedBook() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/delete_book.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Supprimer un livre");
+            stage.setScene(scene);
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+            loadBooks();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Erreur: " + e.getMessage()).showAndWait();
         }
     }
 

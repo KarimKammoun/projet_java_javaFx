@@ -9,6 +9,8 @@
     <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
         <Label text="Members Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
         <HBox HBox.hgrow="ALWAYS"/>
+        <Button fx:id="deleteMemberBtn" text="Delete Selected" styleClass="btn-danger" onAction="#deleteSelectedMember"/>
+        <Button fx:id="editMemberBtn" text="Edit Selected" styleClass="btn-secondary" onAction="#openEditMember"/>
         <Button fx:id="addMemberBtn" text="Add Member" styleClass="btn-primary" onAction="#openAddMember"/>
     </HBox>
 
@@ -18,11 +20,11 @@
         </HBox>
         <TableView fx:id="membersTable" prefHeight="500">
             <columns>
-                <TableColumn text="Phone" prefWidth="150"/>
+                <TableColumn text="Phone" prefWidth="140"/>
+                <TableColumn text="CIN" prefWidth="120"/>
                 <TableColumn text="Name" prefWidth="200"/>
                 <TableColumn text="Email" prefWidth="200"/>
                 <TableColumn text="Type" prefWidth="100"/>
-                <TableColumn text="Actions" prefWidth="150"/>
             </columns>
         </TableView>
     </VBox>

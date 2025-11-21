@@ -9,6 +9,9 @@
     <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
         <Label text="Borrowings Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
         <HBox HBox.hgrow="ALWAYS"/>
+        <Button fx:id="deleteBorrowingBtn" text="Delete Selected" styleClass="btn-danger" onAction="#deleteSelectedBorrowing"/>
+        <Button fx:id="editBorrowingBtn" text="Edit Selected" styleClass="btn-secondary" onAction="#openEditBorrowing"/>
+        <Button fx:id="markReceivedBtn" text="Mark Received" styleClass="btn-success" onAction="#markSelectedReceived"/>
         <Button fx:id="newBorrowingBtn" text="New Borrowing" styleClass="btn-primary" onAction="#openAddBorrowing"/>
     </HBox>
 
@@ -20,11 +23,11 @@
             <columns>
                 <TableColumn text="ID" prefWidth="60"/>
                 <TableColumn text="Copy ID" prefWidth="120"/>
+                <TableColumn text="Book Title" prefWidth="220"/>
                 <TableColumn text="Member" prefWidth="180"/>
                 <TableColumn text="Borrow Date" prefWidth="120"/>
                 <TableColumn text="Due Date" prefWidth="120"/>
                 <TableColumn text="Status" prefWidth="100"/>
-                <TableColumn text="Actions" prefWidth="100"/>
             </columns>
         </TableView>
     </VBox>

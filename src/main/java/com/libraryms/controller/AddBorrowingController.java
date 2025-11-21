@@ -3,8 +3,8 @@ package com.libraryms.controller;
 import com.libraryms.util.DatabaseUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.sql.Connection;
@@ -15,70 +15,154 @@ import java.util.List;
 
 public class AddBorrowingController {
 
-    @FXML private ComboBox<String> copyCombo;
-    @FXML private ComboBox<String> memberCombo;
+    @FXML private TextField bookIdField;
+    @FXML private TextField memberIdField;
     @FXML private DatePicker dueDatePicker;
+    @FXML private TextField borrowingIdField;
+
+    private boolean editMode = false;
+    private Integer originalBorrowingId = null;
+
+    public void loadForEdit(int borrowingId) {
+        try (var conn = DatabaseUtil.connect();
+             var ps = conn.prepareStatement("SELECT b.id, b.copy_id, b.user_phone, b.due_date FROM borrowing b WHERE b.id = ?")) {
+            ps.setInt(1, borrowingId);
+            var rs = ps.executeQuery();
+            if (rs.next()) {
+                String copyId = rs.getString("copy_id");
+                String phone = rs.getString("user_phone");
+                String due = rs.getString("due_date");
+                // determine ISBN for the copy
+                try (var ps2 = conn.prepareStatement("SELECT isbn FROM copies WHERE copy_id = ?")) {
+                    ps2.setString(1, copyId);
+                    var rs2 = ps2.executeQuery();
+                    if (rs2.next()) {
+                        bookIdField.setText(rs2.getString("isbn"));
+                    }
+                }
+                // convert stored phone to member id for display
+                try (var ps3 = conn.prepareStatement("SELECT id FROM users WHERE phone = ?")) {
+                    ps3.setString(1, phone);
+                    var rs3 = ps3.executeQuery();
+                    if (rs3.next()) {
+                        memberIdField.setText(String.valueOf(rs3.getInt("id")));
+                    } else {
+                        memberIdField.setText(phone); // fallback
+                    }
+                }
+                if (due != null) dueDatePicker.setValue(java.time.LocalDate.parse(due));
+                // lock selection changes (prevent changing copy/member in edit)
+                bookIdField.setDisable(true);
+                memberIdField.setDisable(true);
+                originalBorrowingId = borrowingId;
+                editMode = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void loadById() {
+        String idStr = borrowingIdField.getText().trim();
+        if (idStr.isEmpty()) {
+            new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING, "Veuillez entrer l'ID d'emprunt.").showAndWait();
+            return;
+        }
+        try {
+            int id = Integer.parseInt(idStr);
+            loadForEdit(id);
+        } catch (NumberFormatException e) {
+            new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "ID invalide.").showAndWait();
+        }
+    }
 
     @FXML
     private void initialize() {
-        loadCopies();
-        loadMembers();
         dueDatePicker.setValue(LocalDate.now().plusDays(14));
     }
 
     private void loadCopies() {
-        try (Connection conn = DatabaseUtil.connect();
-             var stmt = conn.createStatement();
-             var rs = stmt.executeQuery("SELECT c.copy_id, b.title FROM copies c JOIN books b ON c.isbn = b.isbn WHERE c.status = 'Available' ORDER BY b.title")) {
-            List<String> items = new ArrayList<>();
-            while (rs.next()) {
-                items.add(rs.getString("copy_id") + " (" + rs.getString("title") + ")");
-            }
-            copyCombo.getItems().setAll(items);
-            if (!items.isEmpty()) copyCombo.getSelectionModel().selectFirst();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // No-op: replaced by bookId/memberId text input workflow
     }
-
-    private void loadMembers() {
-        try (Connection conn = DatabaseUtil.connect();
-             var stmt = conn.createStatement();
-             var rs = stmt.executeQuery("SELECT phone, name FROM users ORDER BY name")) {
-            List<String> items = new ArrayList<>();
-            while (rs.next()) {
-                items.add(rs.getString("phone") + " - " + rs.getString("name"));
-            }
-            memberCombo.getItems().setAll(items);
-            if (!items.isEmpty()) memberCombo.getSelectionModel().selectFirst();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    
 
     @FXML
     private void createBorrowing() {
-        var copySel = copyCombo.getValue();
-        var memberSel = memberCombo.getValue();
+        String bookIsbn = bookIdField.getText().trim();
+        String memberIdStr = memberIdField.getText().trim();
         var dueDate = dueDatePicker.getValue();
 
-        if (copySel == null || copySel.isEmpty() || memberSel == null || memberSel.isEmpty() || dueDate == null) {
-            new Alert(Alert.AlertType.WARNING, "Veuillez remplir tous les champs.").showAndWait();
+        if (bookIsbn.isEmpty() || memberIdStr.isEmpty() || dueDate == null) {
+            new Alert(Alert.AlertType.WARNING, "Veuillez remplir tous les champs (ISBN, member ID, due date).").showAndWait();
             return;
         }
-
-        String copyId = copySel.split(" \\(")[0];
-        String phone = memberSel.split(" - ")[0];
 
         try (Connection conn = DatabaseUtil.connect()) {
             conn.setAutoCommit(false);
 
-            // insert borrowing
-            try (PreparedStatement ins = conn.prepareStatement("INSERT INTO borrowing (copy_id, user_phone, borrow_date, due_date, status) VALUES (?, ?, ?, ?, 'In Progress')")) {
+            // resolve member id -> phone (database stores user_phone in borrowing)
+            String phone = null;
+            try (PreparedStatement ps = conn.prepareStatement("SELECT phone FROM users WHERE id = ?")) {
+                try {
+                    int mid = Integer.parseInt(memberIdStr);
+                    ps.setInt(1, mid);
+                    var rs = ps.executeQuery();
+                    if (rs.next()) phone = rs.getString("phone");
+                } catch (NumberFormatException nfe) {
+                    new Alert(Alert.AlertType.ERROR, "Member ID invalide.").showAndWait();
+                    return;
+                }
+            }
+            if (phone == null) {
+                new Alert(Alert.AlertType.WARNING, "Membre introuvable pour l'ID fourni.").showAndWait();
+                conn.rollback();
+                return;
+            }
+
+            if (editMode && originalBorrowingId != null) {
+                try (PreparedStatement upd = conn.prepareStatement("UPDATE borrowing SET due_date = ? WHERE id = ?")) {
+                    upd.setString(1, dueDate.toString());
+                    upd.setInt(2, originalBorrowingId);
+                    upd.executeUpdate();
+                }
+                conn.commit();
+                new Alert(Alert.AlertType.INFORMATION, "Emprunt mis à jour.").showAndWait();
+                Stage s = (Stage) bookIdField.getScene().getWindow();
+                s.close();
+                return;
+            }
+
+            // find an available copy for the given ISBN
+            String copyId = null;
+            try (PreparedStatement find = conn.prepareStatement("SELECT copy_id FROM copies WHERE isbn = ? AND status = 'Available' LIMIT 1")) {
+                find.setString(1, bookIsbn);
+                var rs = find.executeQuery();
+                if (rs.next()) {
+                    copyId = rs.getString("copy_id");
+                }
+            }
+            if (copyId == null) {
+                new Alert(Alert.AlertType.WARNING, "Aucune copie disponible pour ce livre (ISBN: " + bookIsbn + ").").showAndWait();
+                conn.rollback();
+                return;
+            }
+
+            // determine the book title for this copy and insert borrowing with the title
+            String bookTitle = null;
+            try (PreparedStatement getTitle = conn.prepareStatement("SELECT k.title FROM copies c JOIN books k ON c.isbn = k.isbn WHERE c.copy_id = ?")) {
+                getTitle.setString(1, copyId);
+                var rs = getTitle.executeQuery();
+                if (rs.next()) bookTitle = rs.getString(1);
+            }
+
+            // insert borrowing (store book title redundantly for easier queries)
+            try (PreparedStatement ins = conn.prepareStatement("INSERT INTO borrowing (copy_id, user_phone, borrow_date, due_date, status, book_title) VALUES (?, ?, ?, ?, 'In Progress', ?)")) {
                 ins.setString(1, copyId);
                 ins.setString(2, phone);
                 ins.setString(3, LocalDate.now().toString());
                 ins.setString(4, dueDate.toString());
+                ins.setString(5, bookTitle);
                 ins.executeUpdate();
             }
 
@@ -103,7 +187,7 @@ public class AddBorrowingController {
 
             conn.commit();
             new Alert(Alert.AlertType.INFORMATION, "Emprunt créé.").showAndWait();
-            Stage s = (Stage) copyCombo.getScene().getWindow();
+            Stage s = (Stage) bookIdField.getScene().getWindow();
             s.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,7 +197,7 @@ public class AddBorrowingController {
 
     @FXML
     private void cancel() {
-        Stage s = (Stage) copyCombo.getScene().getWindow();
+        Stage s = (Stage) bookIdField.getScene().getWindow();
         s.close();
     }
 }

@@ -19,6 +19,43 @@ public class AddCopyController {
     @FXML private ComboBox<String> bookCombo; // will contain "isbn - title"
     @FXML private TextField copiesField;
     @FXML private TextField locationField;
+    @FXML private TextField copyIdField;
+
+    private boolean editMode = false;
+    private String originalCopyId = null;
+
+    public void loadForEdit(String copyId) {
+        // load copy details and allow editing location/status (book selection disabled)
+        try (var conn = DatabaseUtil.connect();
+             var ps = conn.prepareStatement("SELECT c.copy_id, c.isbn, c.status, c.location, b.title FROM copies c JOIN books b ON c.isbn = b.isbn WHERE c.copy_id = ?")) {
+            ps.setString(1, copyId);
+            var rs = ps.executeQuery();
+            if (rs.next()) {
+                String isbn = rs.getString("isbn");
+                String title = rs.getString("title");
+                String item = isbn + " - " + title;
+                bookCombo.getItems().setAll(item);
+                bookCombo.getSelectionModel().selectFirst();
+                bookCombo.setDisable(true);
+                locationField.setText(rs.getString("location"));
+                copiesField.setText("1");
+                originalCopyId = copyId;
+                editMode = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void loadById() {
+        String copyId = copyIdField.getText().trim();
+        if (copyId.isEmpty()) {
+            new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING, "Veuillez entrer l'ID de la copie.").showAndWait();
+            return;
+        }
+        loadForEdit(copyId);
+    }
 
     @FXML
     private void initialize() {
@@ -54,6 +91,19 @@ public class AddCopyController {
 
         try (Connection conn = DatabaseUtil.connect()) {
             conn.setAutoCommit(false);
+
+            if (editMode && originalCopyId != null) {
+                // update copy location (and leave status as is)
+                try (PreparedStatement upd = conn.prepareStatement("UPDATE copies SET location = ? WHERE copy_id = ?")) {
+                    upd.setString(1, location);
+                    upd.setString(2, originalCopyId);
+                    upd.executeUpdate();
+                }
+                conn.commit();
+                new Alert(Alert.AlertType.INFORMATION, "Copie mise à jour.").showAndWait();
+                Stage s = (Stage) bookCombo.getScene().getWindow(); s.close();
+                return;
+            }
 
             // insert copies
             try (PreparedStatement insCopy = conn.prepareStatement("INSERT INTO copies (copy_id, isbn, status, location) VALUES (?, ?, 'Available', ?)")) {

@@ -113,7 +113,7 @@ public class DashboardController {
     @FXML private void logout() { SceneManager.loadScene("/fxml/login.fxml"); }
     @FXML private void showMembers() { SceneManager.loadScene("/fxml/members.fxml"); }
     @FXML private void showBooks() { SceneManager.loadScene("/fxml/books.fxml"); }
-    @FXML private void showCopies() { SceneManager.loadScene("/fxml/copies.fxml"); }
+    @FXML private void showCopies() { SceneManager.loadScene("/fxml/books.fxml"); }
     @FXML private void showBorrowings() { SceneManager.loadScene("/fxml/borrowings.fxml"); }
     @FXML private void showSettings() { SceneManager.loadScene("/fxml/settings.fxml"); }
     @FXML private void showDashboard() { /* already here */ }

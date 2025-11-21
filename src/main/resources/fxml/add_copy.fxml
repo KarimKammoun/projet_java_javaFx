@@ -14,8 +14,14 @@
             <ColumnConstraints hgrow="ALWAYS"/>
         </columnConstraints>
 
-        <Label text="Book:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="bookCombo" promptText="Select book" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Copy ID (for edit):" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <HBox spacing="8" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <TextField fx:id="copyIdField" promptText="Copy ID (e.g. B0001-C01)" HBox.hgrow="ALWAYS"/>
+            <Button text="Load" onAction="#loadById"/>
+        </HBox>
+
+        <Label text="Book:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="bookCombo" promptText="Select book" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
         <Label text="Number of copies:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="copiesField" promptText="1" GridPane.rowIndex="1" GridPane.columnIndex="1"/>

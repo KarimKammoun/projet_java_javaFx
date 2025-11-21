@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class CopiesController {
@@ -76,6 +77,25 @@ public class CopiesController {
             var scene = new javafx.scene.Scene(root);
             var stage = new javafx.stage.Stage();
             stage.setTitle("Add Copies");
+            stage.setScene(scene);
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+            loadCopies();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML private Button editCopyBtn;
+
+    @FXML
+    private void openEditCopy() {
+        try {
+            var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/add_copy.fxml"));
+            javafx.scene.Parent root = loader.load();
+            var scene = new javafx.scene.Scene(root);
+            var stage = new javafx.stage.Stage();
+            stage.setTitle("Edit Copy (enter Copy ID to load)");
             stage.setScene(scene);
             stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
             stage.showAndWait();

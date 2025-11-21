@@ -15,7 +15,10 @@
         </columnConstraints>
 
         <Label text="ISBN:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="isbnField" promptText="978-..." GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <HBox spacing="8" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <TextField fx:id="isbnField" promptText="978-..." HBox.hgrow="ALWAYS"/>
+            <Button text="Load" onAction="#loadById"/>
+        </HBox>
 
         <Label text="Title:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="titleField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>

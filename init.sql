@@ -1,13 +1,4 @@
-DROP DATABASE IF EXISTS libraryms;
-CREATE DATABASE libraryms;
 
-\c libraryms
-
-DROP TABLE IF EXISTS borrowing;
-DROP TABLE IF EXISTS copies;
-DROP TABLE IF EXISTS books;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS admin;
 
 CREATE TABLE admin (
     id SERIAL PRIMARY KEY,
@@ -53,31 +44,6 @@ CREATE TABLE borrowing (
     status VARCHAR(20) CHECK (status IN ('In Progress', 'Late', 'Returned')) DEFAULT 'In Progress'
 );
 
--- Données
-INSERT INTO admin (email, password, name) VALUES ('admin@library.com', 'admin123', 'Super Admin');
-INSERT INTO users (phone, name, email, birthdate, type, borrow_limit) VALUES
-('+1234567890', 'John Doe', 'john@member.com', '1995-03-15', 'Standard', 3),
-('+1234567891', 'Jane Smith', 'jane@member.com', '1990-07-22', 'Premium', 5);
+INSERT INTO admin (email, password, name) VALUES 
+('admin@library.com', 'admin123', 'Super Admin');
 
-INSERT INTO books (isbn, title, author, category, total_copies, available_copies) VALUES
-('978-0-13-468599-1', 'Clean Code', 'Robert C. Martin', 'Programming', 5, 3),
-('978-0-13-235088-4', 'Clean Architecture', 'Robert C. Martin', 'Programming', 4, 4),
-('978-0-596-51624-5', 'Design Patterns', 'Gang of Four', 'Programming', 3, 1);
-
-INSERT INTO copies (copy_id, isbn, status) VALUES
-('CC-001', '978-0-13-468599-1', 'Available'),
-('CC-002', '978-0-13-468599-1', 'Borrowed'),
-('CC-003', '978-0-13-468599-1', 'Available'),
-('CC-004', '978-0-13-468599-1', 'Available'),
-('CC-005', '978-0-13-468599-1', 'Available'),
-('CA-001', '978-0-13-235088-4', 'Available'),
-('CA-002', '978-0-13-235088-4', 'Available'),
-('CA-003', '978-0-13-235088-4', 'Available'),
-('CA-004', '978-0-13-235088-4', 'Available'),
-('DP-001', '978-0-596-51624-5', 'Available'),
-('DP-002', '978-0-596-51624-5', 'Available'),
-('DP-003', '978-0-596-51624-5', 'Borrowed');
-
-INSERT INTO borrowing (copy_id, user_phone, admin_id, borrow_date, due_date, status) VALUES
-('CC-002', '+1234567890', 1, '2025-11-01', '2025-11-15', 'In Progress'),
-('DP-003', '+1234567890', 1, '2025-10-25', '2025-11-08', 'Late');

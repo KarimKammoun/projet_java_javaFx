@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class MembersController {
@@ -22,9 +23,10 @@ public class MembersController {
     private void initialize() {
         var cols = membersTable.getColumns();
         ((TableColumn<Member, String>) cols.get(0)).setCellValueFactory(new PropertyValueFactory<>("phone"));
-        ((TableColumn<Member, String>) cols.get(1)).setCellValueFactory(new PropertyValueFactory<>("name"));
-        ((TableColumn<Member, String>) cols.get(2)).setCellValueFactory(new PropertyValueFactory<>("email"));
-        ((TableColumn<Member, String>) cols.get(3)).setCellValueFactory(new PropertyValueFactory<>("type"));
+        ((TableColumn<Member, String>) cols.get(1)).setCellValueFactory(new PropertyValueFactory<>("cin"));
+        ((TableColumn<Member, String>) cols.get(2)).setCellValueFactory(new PropertyValueFactory<>("name"));
+        ((TableColumn<Member, String>) cols.get(3)).setCellValueFactory(new PropertyValueFactory<>("email"));
+        ((TableColumn<Member, String>) cols.get(4)).setCellValueFactory(new PropertyValueFactory<>("type"));
         loadMembers();
 
         // set up filtered + sorted list for search
@@ -49,10 +51,11 @@ public class MembersController {
         var list = FXCollections.<Member>observableArrayList();
         try (var conn = DatabaseUtil.connect();
              var stmt = conn.createStatement();
-             var rs = stmt.executeQuery("SELECT phone, name, email, type FROM users")) {
+             var rs = stmt.executeQuery("SELECT phone, name, email, type, cin FROM users")) {
             while (rs.next()) {
                 list.add(new Member(
                         rs.getString("phone"),
+                        rs.getString("cin"),
                         rs.getString("name"),
                         rs.getString("email"),
                         rs.getString("type")
@@ -81,13 +84,102 @@ public class MembersController {
             e.printStackTrace();
         }
     }
+
+    @FXML private Button editMemberBtn;
+    @FXML private Button deleteMemberBtn;
+
+    @FXML
+    private void openEditMember() {
+        // Open the add/edit member dialog, but first ask for Email + CIN in a small popup
+        try {
+            var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/add_member.fxml"));
+            javafx.scene.Parent editRoot = loader.load();
+            var editController = loader.getController();
+
+            // Build small prompt stage asking for email and CIN
+            var grid = new javafx.scene.layout.GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new javafx.geometry.Insets(15));
+            var emailLabel = new javafx.scene.control.Label("Email:");
+            var emailField = new javafx.scene.control.TextField();
+            var cinLabel = new javafx.scene.control.Label("CIN:");
+            var cinField = new javafx.scene.control.TextField();
+            var loadBtn = new javafx.scene.control.Button("Load");
+            var cancelBtn = new javafx.scene.control.Button("Cancel");
+
+            grid.add(emailLabel, 0, 0);
+            grid.add(emailField, 1, 0);
+            grid.add(cinLabel, 0, 1);
+            grid.add(cinField, 1, 1);
+            var buttons = new javafx.scene.layout.HBox(10, loadBtn, cancelBtn);
+            grid.add(buttons, 1, 2);
+
+            var promptScene = new javafx.scene.Scene(grid);
+            var promptStage = new javafx.stage.Stage();
+            promptStage.setTitle("Load Member to Edit");
+            promptStage.setScene(promptScene);
+            promptStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+            loadBtn.setOnAction(evt -> {
+                String email = emailField.getText().trim();
+                String cin = cinField.getText().trim();
+                if (email.isEmpty() || cin.isEmpty()) {
+                    new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING, "Veuillez entrer email et CIN").showAndWait();
+                    return;
+                }
+                boolean loaded = false;
+                if (editController instanceof com.libraryms.controller.AddMemberController) {
+                    loaded = ((com.libraryms.controller.AddMemberController) editController).loadForEditByEmailAndCin(email, cin);
+                }
+                if (loaded) {
+                    promptStage.close();
+                    // show edit dialog
+                    var scene = new javafx.scene.Scene(editRoot);
+                    var stage = new javafx.stage.Stage();
+                    stage.setTitle("Edit Member - " + email);
+                    stage.setScene(scene);
+                    stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+                    stage.showAndWait();
+                    loadMembers();
+                } else {
+                    new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "Membre non trouvé pour cet email et CIN").showAndWait();
+                }
+            });
+
+            cancelBtn.setOnAction(evt -> promptStage.close());
+
+            promptStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void deleteSelectedMember() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/delete_member.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Supprimer un membre");
+            stage.setScene(scene);
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+            loadMembers();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "Erreur: " + e.getMessage()).showAndWait();
+        }
+    }
     
     public static class Member {
-        private final String phone, name, email, type;
-        public Member(String phone, String name, String email, String type) {
-            this.phone = phone; this.name = name; this.email = email; this.type = type;
+        private final String phone, cin, name, email, type;
+        public Member(String phone, String cin, String name, String email, String type) {
+            this.phone = phone; this.cin = cin; this.name = name; this.email = email; this.type = type;
         }
         public String getPhone() { return phone; }
+        public String getCin() { return cin; }
         public String getName() { return name; }
         public String getEmail() { return email; }
         public String getType() { return type; }

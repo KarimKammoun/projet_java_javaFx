@@ -14,13 +14,13 @@
 
     <VBox spacing="15" styleClass="login-form">
         <TextField fx:id="emailField" promptText="Email (Admin) / Téléphone (Member)" text="admin@library.com"/>
-        <PasswordField fx:id="passwordField" promptText="Mot de passe (Admin uniquement)"/>
+        <PasswordField fx:id="passwordField" promptText="Mot de passe"/>
         <HBox spacing="0">
             <ToggleButton fx:id="adminBtn" text="Admin" selected="true" styleClass="toggle-left"/>
             <ToggleButton text="Member" styleClass="toggle-right"/>
         </HBox>
         <Button text="Login" onAction="#handleLogin" styleClass="login-btn"/>
         <Label text="Admin: admin@library.com / password: admin123" style="-fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
-        <Label text="Member: +1234567890" style="-fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
+        <Label text="Member: +216000000001 / password: password123" style="-fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
     </VBox>
 </VBox>
