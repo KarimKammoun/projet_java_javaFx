@@ -18,6 +18,7 @@ public class BorrowingsController {
 
     @FXML private TableView<BorrowingAdmin> borrowingsTable;
     @FXML private TextField searchField;
+    @FXML private javafx.scene.control.ChoiceBox<String> searchColumnChoice;
 
     private ObservableList<BorrowingAdmin> masterData;
 
@@ -33,21 +34,46 @@ public class BorrowingsController {
         ((TableColumn<BorrowingAdmin, String>) cols.get(6)).setCellValueFactory(new PropertyValueFactory<>("status"));
         loadBorrowings();
 
+        if (searchColumnChoice != null) searchColumnChoice.getSelectionModel().select("All");
+
         FilteredList<BorrowingAdmin> filtered = new FilteredList<>(masterData != null ? masterData : FXCollections.observableArrayList(), p -> true);
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             var lower = newVal == null ? "" : newVal.toLowerCase();
             filtered.setPredicate(b -> {
                 if (lower.isEmpty()) return true;
-                if (String.valueOf(b.getId()).contains(lower)) return true;
-                if (b.getCopyId() != null && b.getCopyId().toLowerCase().contains(lower)) return true;
-                if (b.getBookTitle() != null && b.getBookTitle().toLowerCase().contains(lower)) return true;
-                if (b.getMemberName() != null && b.getMemberName().toLowerCase().contains(lower)) return true;
-                if (b.getBorrowDate() != null && b.getBorrowDate().toString().toLowerCase().contains(lower)) return true;
-                if (b.getDueDate() != null && b.getDueDate().toString().toLowerCase().contains(lower)) return true;
-                if (b.getStatus() != null && b.getStatus().toLowerCase().contains(lower)) return true;
-                return false;
+                String col = (searchColumnChoice != null && searchColumnChoice.getValue() != null) ? searchColumnChoice.getValue() : "All";
+                switch (col) {
+                    case "ID":
+                        return String.valueOf(b.getId()).contains(lower);
+                    case "Copy ID":
+                        return b.getCopyId() != null && b.getCopyId().toLowerCase().contains(lower);
+                    case "Book Title":
+                        return b.getBookTitle() != null && b.getBookTitle().toLowerCase().contains(lower);
+                    case "Member":
+                        return b.getMemberName() != null && b.getMemberName().toLowerCase().contains(lower);
+                    case "Borrow Date":
+                        return b.getBorrowDate() != null && b.getBorrowDate().toString().toLowerCase().contains(lower);
+                    case "Due Date":
+                        return b.getDueDate() != null && b.getDueDate().toString().toLowerCase().contains(lower);
+                    case "Status":
+                        return b.getStatus() != null && b.getStatus().toLowerCase().contains(lower);
+                    default:
+                        if (String.valueOf(b.getId()).contains(lower)) return true;
+                        if (b.getCopyId() != null && b.getCopyId().toLowerCase().contains(lower)) return true;
+                        if (b.getBookTitle() != null && b.getBookTitle().toLowerCase().contains(lower)) return true;
+                        if (b.getMemberName() != null && b.getMemberName().toLowerCase().contains(lower)) return true;
+                        if (b.getBorrowDate() != null && b.getBorrowDate().toString().toLowerCase().contains(lower)) return true;
+                        if (b.getDueDate() != null && b.getDueDate().toString().toLowerCase().contains(lower)) return true;
+                        if (b.getStatus() != null && b.getStatus().toLowerCase().contains(lower)) return true;
+                        return false;
+                }
             });
         });
+        if (searchColumnChoice != null) {
+            searchColumnChoice.getSelectionModel().selectedItemProperty().addListener((o, oldV, newV) -> {
+                if (searchField != null) searchField.setText(searchField.getText());
+            });
+        }
         SortedList<BorrowingAdmin> sorted = new SortedList<>(filtered);
         sorted.comparatorProperty().bind(borrowingsTable.comparatorProperty());
         borrowingsTable.setItems(sorted);

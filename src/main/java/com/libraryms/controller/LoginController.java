@@ -12,7 +12,16 @@ public class LoginController {
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private ToggleButton adminBtn;
+    @FXML private ToggleButton memberBtn;
 
+    @FXML
+    private void initialize() {
+        // make the two toggle buttons exclusive
+        javafx.scene.control.ToggleGroup group = new javafx.scene.control.ToggleGroup();
+        adminBtn.setToggleGroup(group);
+        memberBtn.setToggleGroup(group);
+        adminBtn.setSelected(true);
+    }
 
     @FXML
     private void handleLogin() {
@@ -75,7 +84,7 @@ public class LoginController {
                     Session.setEmail(rs.getString("email"));
                     Session.setName(rs.getString("name"));
                     Session.setPhone(rs.getString("phone"));
-                    SceneManager.loadScene("/fxml/main_layout.fxml");
+                    SceneManager.loadScene("/fxml/member_layout.fxml");
                 } else {
                     new Alert(Alert.AlertType.ERROR, "Mot de passe incorrect").show();
                 }

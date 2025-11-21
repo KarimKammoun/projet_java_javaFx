@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.libraryms.controller.MemberBorrowingHistoryController"
+      style="-fx-background-color: #f8f9fa;" spacing="20">
+
+    <!-- Filter Tabs -->
+    <HBox spacing="10" style="-fx-padding: 20 40 0 40;">
+        <Button text="Active" styleClass="btn btn-primary" onAction="#filterActive"/>
+        <Button text="Completed" styleClass="btn btn-secondary" onAction="#filterCompleted"/>
+        <Button text="Overdue" styleClass="btn btn-danger" onAction="#filterOverdue"/>
+        <Button text="All" styleClass="btn btn-secondary" onAction="#filterAll"/>
+        <HBox HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="searchField" promptText="Search by book title..." HBox.hgrow="ALWAYS" style="-fx-max-width: 250;"/>
+    </HBox>
+
+    <!-- Borrowings Table -->
+    <VBox spacing="10" style="-fx-padding: 20 40;">
+        <TableView fx:id="borrowingsTable" prefHeight="500">
+            <columns>
+                <TableColumn text="Book Title" prefWidth="200"/>
+                <TableColumn text="Copy ID" prefWidth="100"/>
+                <TableColumn text="Borrow Date" prefWidth="120"/>
+                <TableColumn text="Due Date" prefWidth="120"/>
+                <TableColumn text="Return Date" prefWidth="120"/>
+                <TableColumn text="Status" prefWidth="100"/>
+                <TableColumn text="Days" prefWidth="80"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>

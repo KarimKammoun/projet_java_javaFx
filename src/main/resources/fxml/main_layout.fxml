@@ -16,7 +16,7 @@
             <Button fx:id="btnBorrowings" text="Borrowings" styleClass="nav-btn" onAction="#showBorrowings"/>
             <Button fx:id="btnSettings" text="Settings" styleClass="nav-btn" onAction="#showSettings"/>
             
-            <Button fx:id="btnLogout" text="Logout" styleClass="btn-primary" onAction="#logout"/>
+            <Button fx:id="btnLogout" text="Logout" styleClass="btn btn-primary" onAction="#logout"/>
             <VBox VBox.vgrow="ALWAYS"/>
         </VBox>
     </left>

@@ -32,7 +32,7 @@
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
         <Button text="Cancel" onAction="#cancel"/>
-        <Button text="Create" onAction="#createBorrowing" styleClass="btn-primary"/>
+        <Button text="Create" onAction="#createBorrowing" styleClass="btn btn-primary"/>
     </HBox>
 
 </VBox>

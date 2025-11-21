@@ -9,8 +9,8 @@
     <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
         <Label text="Copies Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
         <HBox HBox.hgrow="ALWAYS"/>
-        <Button fx:id="editCopyBtn" text="Edit Selected" styleClass="btn-secondary" onAction="#openEditCopy"/>
-        <Button fx:id="addCopyBtn" text="Add Copy" styleClass="btn-primary" onAction="#openAddCopy"/>
+        <Button fx:id="editCopyBtn" text="Edit Selected" styleClass="btn btn-secondary" onAction="#openEditCopy"/>
+        <Button fx:id="addCopyBtn" text="Add Copy" styleClass="btn btn-primary" onAction="#openAddCopy"/>
     </HBox>
 
     <VBox spacing="10" style="-fx-padding: 0 40;">

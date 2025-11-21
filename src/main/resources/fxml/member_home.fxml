@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.libraryms.controller.MemberHomeController"
+      style="-fx-background-color: #f8f9fa;" spacing="20">
+
+    <!-- Welcome Banner -->
+    <VBox style="-fx-background-color: linear-gradient(#0d6efd, #0b5ed7); -fx-padding: 30 40; -fx-background-radius: 0; -fx-text-fill: white;">
+        <Label fx:id="welcomeLabel" text="Welcome back!" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        <Label text="Here's your library overview" style="-fx-text-fill: rgba(255,255,255,0.9);"/>
+    </VBox>
+
+    <!-- User Stats Row -->
+    <HBox spacing="15" style="-fx-padding: 20 40;">
+        <VBox styleClass="stat-card" prefWidth="160" HBox.hgrow="ALWAYS">
+            <Label text="Member Type" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
+            <Label fx:id="memberTypeLabel" text="-" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #0d6efd;"/>
+        </VBox>
+        <VBox styleClass="stat-card" prefWidth="160" HBox.hgrow="ALWAYS">
+            <Label text="Books Borrowed" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
+            <Label fx:id="borrowedCountLabel" text="0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #198754;"/>
+        </VBox>
+        <VBox styleClass="stat-card" prefWidth="160" HBox.hgrow="ALWAYS">
+            <Label text="Limit" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
+            <Label fx:id="limitLabel" text="0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #fd7e14;"/>
+        </VBox>
+        <VBox styleClass="stat-card" prefWidth="160" HBox.hgrow="ALWAYS">
+            <Label text="Available to Borrow" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
+            <Label fx:id="availableSlotsLabel" text="0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #28a745;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Library Stats & Featured Books Section -->
+    <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-padding: 0 40;">
+        <Label text="Library Stats" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+
+        <HBox spacing="15" style="-fx-padding: 10 0;">
+            <VBox styleClass="stat-card" prefWidth="160" HBox.hgrow="ALWAYS">
+                <Label text="Total Books" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
+                <Label fx:id="totalBooksLabel" text="0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #0d6efd;"/>
+            </VBox>
+            <VBox styleClass="stat-card" prefWidth="160" HBox.hgrow="ALWAYS">
+                <Label text="Total Copies" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
+                <Label fx:id="totalCopiesLabel" text="0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #198754;"/>
+            </VBox>
+            <VBox styleClass="stat-card" prefWidth="160" HBox.hgrow="ALWAYS">
+                <Label text="Available Copies" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
+                <Label fx:id="availableCopiesLabel" text="0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #28a745;"/>
+            </VBox>
+            <VBox styleClass="stat-card" prefWidth="160" HBox.hgrow="ALWAYS">
+                <Label text="Borrowed Copies" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
+                <Label fx:id="borrowedCopiesLabel" text="0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #fd7e14;"/>
+            </VBox>
+        </HBox>
+
+        <Label text="Featured Available Books" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+            <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-border-color: transparent; -fx-background-color: transparent;">
+                <FlowPane fx:id="booksGridBox" hgap="15" vgap="15" style="-fx-padding: 5;"/>
+            </ScrollPane>
+    </VBox>
+    
+</VBox>

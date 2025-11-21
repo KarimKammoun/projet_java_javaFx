@@ -14,8 +14,8 @@
             <Label text="Member Portal" style="-fx-text-fill: #6c757d;"/>
         </HBox>
         <HBox HBox.hgrow="ALWAYS"/>
-        <Button text="Browse Books" styleClass="btn-primary" onAction="#goToBrowse"/>
-        <Button text="My Borrowings" styleClass="btn-primary" onAction="#goToBorrowings"/>
+        <Button text="Browse Books" styleClass="btn btn-primary" onAction="#goToBrowse"/>
+        <Button text="My Borrowings" styleClass="btn btn-primary" onAction="#goToBorrowings"/>
         <Label text="John Doe  Member" style="-fx-background-color: #cce7ff; -fx-padding: 4 8; -fx-background-radius: 12;"/>
     </HBox>
 

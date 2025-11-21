@@ -152,19 +152,20 @@ public class InitDB {
             "status TEXT CHECK (status IN ('Available', 'Borrowed', 'Lost')) DEFAULT 'Available', " +
             "FOREIGN KEY(isbn) REFERENCES books(isbn) ON DELETE CASCADE)");
 
-        // Create borrowing table
+        // Create borrowing table (includes book_title)
         stmt.execute("CREATE TABLE borrowing (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "copy_id TEXT NOT NULL, " +
-                "user_phone TEXT NOT NULL, " +
-                "admin_id INTEGER, " +
-                "borrow_date DATE NOT NULL DEFAULT CURRENT_DATE, " +
-                "due_date DATE NOT NULL, " +
-                "return_date DATE, " +
-                "status TEXT CHECK (status IN ('In Progress', 'Late', 'Returned')) DEFAULT 'In Progress', " +
-                "FOREIGN KEY(copy_id) REFERENCES copies(copy_id) ON DELETE CASCADE, " +
-                "FOREIGN KEY(user_phone) REFERENCES users(phone) ON DELETE CASCADE, " +
-                "FOREIGN KEY(admin_id) REFERENCES admin(id) ON DELETE SET NULL)");
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "copy_id TEXT NOT NULL, " +
+            "user_phone TEXT NOT NULL, " +
+            "admin_id INTEGER, " +
+            "borrow_date DATE NOT NULL DEFAULT CURRENT_DATE, " +
+            "due_date DATE NOT NULL, " +
+            "return_date DATE, " +
+            "status TEXT CHECK (status IN ('In Progress', 'Late', 'Returned')) DEFAULT 'In Progress', " +
+            "book_title TEXT, " +
+            "FOREIGN KEY(copy_id) REFERENCES copies(copy_id) ON DELETE CASCADE, " +
+            "FOREIGN KEY(user_phone) REFERENCES users(phone) ON DELETE CASCADE, " +
+            "FOREIGN KEY(admin_id) REFERENCES admin(id) ON DELETE SET NULL)");
     }
 
     private static void ensureBorrowingBookTitleColumn(Connection conn) {

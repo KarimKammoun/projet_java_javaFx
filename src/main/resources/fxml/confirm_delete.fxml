@@ -11,7 +11,7 @@
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
         <Button text="Cancel" onAction="#onCancel"/>
-        <Button text="Delete" styleClass="btn-danger" onAction="#onConfirm"/>
+        <Button text="Delete" styleClass="btn btn-danger" onAction="#onConfirm"/>
     </HBox>
 
 </VBox>

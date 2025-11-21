@@ -23,7 +23,7 @@
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
         <Button text="Cancel" onAction="#cancel"/>
-        <Button text="Mark Received" onAction="#markReceived" styleClass="btn-success"/>
+        <Button text="Mark Received" onAction="#markReceived" styleClass="btn btn-success"/>
     </HBox>
 
 </VBox>

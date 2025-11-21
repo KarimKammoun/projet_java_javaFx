@@ -17,6 +17,7 @@ public class BooksController {
 
     @FXML private TableView<Book> booksTable;
     @FXML private TextField searchField;
+    @FXML private javafx.scene.control.ChoiceBox<String> searchColumnChoice;
 
     private ObservableList<Book> masterData;
 
@@ -31,20 +32,43 @@ public class BooksController {
         ((TableColumn<Book, Integer>) cols.get(5)).setCellValueFactory(new PropertyValueFactory<>("availableCopies"));
         loadBooks();
 
+        if (searchColumnChoice != null) searchColumnChoice.getSelectionModel().select("All");
+
         FilteredList<Book> filtered = new FilteredList<>(masterData != null ? masterData : FXCollections.observableArrayList(), p -> true);
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             var lower = newVal == null ? "" : newVal.toLowerCase();
             filtered.setPredicate(book -> {
                 if (lower.isEmpty()) return true;
-                if (book.getIsbn() != null && book.getIsbn().toLowerCase().contains(lower)) return true;
-                if (book.getTitle() != null && book.getTitle().toLowerCase().contains(lower)) return true;
-                if (book.getAuthor() != null && book.getAuthor().toLowerCase().contains(lower)) return true;
-                if (book.getCategory() != null && book.getCategory().toLowerCase().contains(lower)) return true;
-                if (String.valueOf(book.getTotalCopies()).contains(lower)) return true;
-                if (String.valueOf(book.getAvailableCopies()).contains(lower)) return true;
-                return false;
+                String col = (searchColumnChoice != null && searchColumnChoice.getValue() != null) ? searchColumnChoice.getValue() : "All";
+                switch (col) {
+                    case "ISBN":
+                        return book.getIsbn() != null && book.getIsbn().toLowerCase().contains(lower);
+                    case "Title":
+                        return book.getTitle() != null && book.getTitle().toLowerCase().contains(lower);
+                    case "Author":
+                        return book.getAuthor() != null && book.getAuthor().toLowerCase().contains(lower);
+                    case "Category":
+                        return book.getCategory() != null && book.getCategory().toLowerCase().contains(lower);
+                    case "Copies":
+                        return String.valueOf(book.getTotalCopies()).contains(lower);
+                    case "Available":
+                        return String.valueOf(book.getAvailableCopies()).contains(lower);
+                    default:
+                        if (book.getIsbn() != null && book.getIsbn().toLowerCase().contains(lower)) return true;
+                        if (book.getTitle() != null && book.getTitle().toLowerCase().contains(lower)) return true;
+                        if (book.getAuthor() != null && book.getAuthor().toLowerCase().contains(lower)) return true;
+                        if (book.getCategory() != null && book.getCategory().toLowerCase().contains(lower)) return true;
+                        if (String.valueOf(book.getTotalCopies()).contains(lower)) return true;
+                        if (String.valueOf(book.getAvailableCopies()).contains(lower)) return true;
+                        return false;
+                }
             });
         });
+        if (searchColumnChoice != null) {
+            searchColumnChoice.getSelectionModel().selectedItemProperty().addListener((o, oldV, newV) -> {
+                if (searchField != null) searchField.setText(searchField.getText());
+            });
+        }
         SortedList<Book> sorted = new SortedList<>(filtered);
         sorted.comparatorProperty().bind(booksTable.comparatorProperty());
         booksTable.setItems(sorted);

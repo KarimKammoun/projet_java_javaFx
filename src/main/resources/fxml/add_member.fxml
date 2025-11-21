@@ -38,7 +38,7 @@
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
         <Button text="Cancel" onAction="#cancel"/>
-        <Button text="Save" onAction="#saveMember" styleClass="btn-primary"/>
+        <Button text="Save" onAction="#saveMember" styleClass="btn btn-primary"/>
     </HBox>
 
 </VBox>

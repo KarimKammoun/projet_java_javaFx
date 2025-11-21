@@ -16,6 +16,7 @@ public class MembersController {
 
     @FXML private TableView<Member> membersTable;
     @FXML private TextField searchField;
+    @FXML private javafx.scene.control.ChoiceBox<String> searchColumnChoice;
 
     private ObservableList<Member> masterData;
 
@@ -29,19 +30,45 @@ public class MembersController {
         ((TableColumn<Member, String>) cols.get(4)).setCellValueFactory(new PropertyValueFactory<>("type"));
         loadMembers();
 
+        // prepare search column choice
+        if (searchColumnChoice != null) {
+            searchColumnChoice.getSelectionModel().select("All");
+        }
+
         // set up filtered + sorted list for search
         FilteredList<Member> filtered = new FilteredList<>(masterData != null ? masterData : FXCollections.observableArrayList(), p -> true);
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             var lower = newVal == null ? "" : newVal.toLowerCase();
             filtered.setPredicate(member -> {
                 if (lower.isEmpty()) return true;
-                if (member.getPhone() != null && member.getPhone().toLowerCase().contains(lower)) return true;
-                if (member.getName() != null && member.getName().toLowerCase().contains(lower)) return true;
-                if (member.getEmail() != null && member.getEmail().toLowerCase().contains(lower)) return true;
-                if (member.getType() != null && member.getType().toLowerCase().contains(lower)) return true;
-                return false;
+                String col = (searchColumnChoice != null && searchColumnChoice.getValue() != null) ? searchColumnChoice.getValue() : "All";
+                switch (col) {
+                    case "Phone":
+                        return member.getPhone() != null && member.getPhone().toLowerCase().contains(lower);
+                    case "CIN":
+                        return member.getCin() != null && member.getCin().toLowerCase().contains(lower);
+                    case "Name":
+                        return member.getName() != null && member.getName().toLowerCase().contains(lower);
+                    case "Email":
+                        return member.getEmail() != null && member.getEmail().toLowerCase().contains(lower);
+                    case "Type":
+                        return member.getType() != null && member.getType().toLowerCase().contains(lower);
+                    default:
+                        if (member.getPhone() != null && member.getPhone().toLowerCase().contains(lower)) return true;
+                        if (member.getName() != null && member.getName().toLowerCase().contains(lower)) return true;
+                        if (member.getEmail() != null && member.getEmail().toLowerCase().contains(lower)) return true;
+                        if (member.getType() != null && member.getType().toLowerCase().contains(lower)) return true;
+                        if (member.getCin() != null && member.getCin().toLowerCase().contains(lower)) return true;
+                        return false;
+                }
             });
         });
+        if (searchColumnChoice != null) {
+            searchColumnChoice.getSelectionModel().selectedItemProperty().addListener((o, oldV, newV) -> {
+                // re-trigger search to apply the new column filter
+                if (searchField != null) searchField.setText(searchField.getText());
+            });
+        }
         SortedList<Member> sorted = new SortedList<>(filtered);
         sorted.comparatorProperty().bind(membersTable.comparatorProperty());
         membersTable.setItems(sorted);
