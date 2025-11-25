@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.libraryms.controller.login.LoginController"
+      alignment="CENTER" spacing="20" style="-fx-background-color: #f8f9fa;">
+
+    <padding><Insets top="100" right="300" bottom="100" left="300"/></padding>
+
+    <Label text="Library Management System" style="-fx-font-size: 24; -fx-font-weight: bold;"/>
+    <Label text="Welcome back! Please login to continue" style="-fx-text-fill: #6c757d;"/>
+
+    <VBox spacing="15" styleClass="login-form">
+        <TextField fx:id="emailField" promptText="Email (Admin) / Téléphone (Member)" text="admin@library.com"/>
+        <PasswordField fx:id="passwordField" promptText="Mot de passe"/>
+        <HBox spacing="8" styleClass="toggle-group">
+            <ToggleButton fx:id="adminBtn" text="Admin" selected="true" styleClass="toggle-left"/>
+            <ToggleButton fx:id="memberBtn" text="Member" styleClass="toggle-right"/>
+        </HBox>
+            <Button text="Créer un admin" onAction="#openCreateAdmin" styleClass="btn btn-ghost"/>
+            <Button text="Login" onAction="#handleLogin" styleClass="login-btn"/>
+        <Label text="Admin: admin@library.com / password: admin123" style="-fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
+        <Label text="Member: +216000000001 / password: password123" style="-fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
+    </VBox>
+</VBox>

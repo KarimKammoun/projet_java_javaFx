@@ -16,7 +16,7 @@ public class App extends Application {
         }
 
         SceneManager.setStage(stage);
-        SceneManager.loadScene("/fxml/login.fxml");
+        SceneManager.loadScene("/fxml/login/login.fxml");
         stage.setTitle("LibraryMS");
         stage.setWidth(1200);
         stage.setHeight(800);

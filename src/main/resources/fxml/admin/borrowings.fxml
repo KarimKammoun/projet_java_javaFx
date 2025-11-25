@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.libraryms.controller.admin.BorrowingsController"
+      style="-fx-background-color: #f8f9fa;" spacing="20">
+
+    <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
+        <Label text="Borrowings Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <Button fx:id="deleteBorrowingBtn" text="Delete Selected" styleClass="btn btn-danger" onAction="#deleteSelectedBorrowing"/>
+        <Button fx:id="editBorrowingBtn" text="Edit Selected" styleClass="btn btn-secondary" onAction="#openEditBorrowing"/>
+        <Button fx:id="markReceivedBtn" text="Mark Received" styleClass="btn btn-success" onAction="#markSelectedReceived"/>
+        <Button fx:id="newBorrowingBtn" text="New Borrowing" styleClass="btn btn-primary" onAction="#openAddBorrowing"/>
+    </HBox>
+
+    <VBox spacing="10" style="-fx-padding: 0 40;">
+        <HBox spacing="10">
+            <ChoiceBox fx:id="searchColumnChoice" prefWidth="160">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="All" />
+                        <String fx:value="ID" />
+                        <String fx:value="Copy ID" />
+                        <String fx:value="Book Title" />
+                        <String fx:value="Member" />
+                        <String fx:value="Borrow Date" />
+                        <String fx:value="Due Date" />
+                        <String fx:value="Status" />
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
+            <TextField fx:id="searchField" promptText="Search borrowings..." HBox.hgrow="ALWAYS"/>
+        </HBox>
+        <TableView fx:id="borrowingsTable" prefHeight="500">
+            <columns>
+                <TableColumn text="ID" prefWidth="60"/>
+                <TableColumn text="Copy ID" prefWidth="120"/>
+                <TableColumn text="Book Title" prefWidth="220"/>
+                <TableColumn text="Member" prefWidth="180"/>
+                <TableColumn text="Borrow Date" prefWidth="120"/>
+                <TableColumn text="Due Date" prefWidth="120"/>
+                <TableColumn text="Status" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>

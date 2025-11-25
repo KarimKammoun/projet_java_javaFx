@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.libraryms.controller.user.MemberBooksController"
+      style="-fx-background-color: #f8f9fa;" spacing="10">
+
+    <HBox style="-fx-background-color: white; -fx-padding: 12; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
+        <Label text="Available Books" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+        <HBox HBox.hgrow="ALWAYS"/>
+        <Button text="Back" styleClass="btn btn-secondary" onAction="#goBack"/>
+    </HBox>
+
+    <VBox spacing="10" style="-fx-padding: 0 20 20 20;">
+        <HBox spacing="10">
+            <TextField fx:id="searchField" promptText="Search available books..." HBox.hgrow="ALWAYS"/>
+        </HBox>
+
+        <TableView fx:id="booksTable" prefHeight="600">
+            <columns>
+                <TableColumn text="ISBN" prefWidth="150" />
+                <TableColumn text="Title" prefWidth="300" />
+                <TableColumn text="Author" prefWidth="200" />
+                <TableColumn text="Category" prefWidth="120" />
+                <TableColumn text="Available" prefWidth="100" />
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>

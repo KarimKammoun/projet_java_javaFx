@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.libraryms.controller.pop_up.AddBookController" spacing="10" alignment="CENTER" styleClass="card">
+
+        <Label text="Add New Book" styleClass="card-title"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" prefWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="ISBN:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <HBox spacing="8" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <TextField fx:id="isbnField" promptText="978-..." HBox.hgrow="ALWAYS"/>
+            <Button text="Load" onAction="#loadById"/>
+        </HBox>
+
+        <Label text="Title:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="titleField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Author:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="authorField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Category:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="categoryField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Copies:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="copiesField" promptText="1" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#cancel" styleClass="button btn-secondary"/>
+        <Button text="Save" onAction="#saveBook" styleClass="button btn-primary"/>
+    </HBox>
+
+</VBox>

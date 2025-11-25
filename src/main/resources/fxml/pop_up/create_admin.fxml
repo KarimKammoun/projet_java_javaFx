@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.libraryms.controller.pop_up.CreateAdminController"
+      alignment="CENTER" spacing="12" styleClass="content-pane">
+
+    <Label text="Créer un administrateur" styleClass="title"/>
+
+    <VBox spacing="10" styleClass="card" maxWidth="480">
+        <TextField fx:id="emailField" promptText="Email" />
+        <TextField fx:id="nameField" promptText="Nom complet" />
+        <PasswordField fx:id="passwordField" promptText="Mot de passe" />
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirmer le mot de passe" />
+
+        <HBox spacing="10">
+            <Button text="Annuler" onAction="#cancel" styleClass="btn btn-ghost"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Button text="Créer" onAction="#createAdmin" styleClass="btn btn-primary"/>
+        </HBox>
+    </VBox>
+</VBox>

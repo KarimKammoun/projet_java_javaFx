@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.libraryms.controller.pop_up.MarkReceivedController" spacing="12" alignment="CENTER" styleClass="card">
+
+    <Label text="Marquer l'emprunt comme reçu" styleClass="card-title"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" prefWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Copy ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="copyIdField" promptText="Entrez l'ID de copie" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Or Borrowing ID:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="borrowingIdField" promptText="ID d'emprunt optionnel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#cancel" styleClass="button btn-secondary"/>
+        <Button text="Marquer reçu" onAction="#markReceived" styleClass="button btn-success"/>
+    </HBox>
+
+</VBox>

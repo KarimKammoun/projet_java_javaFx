@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.libraryms.controller.admin.MainLayoutController"
+            style="-fx-background-color: #f8f9fa;">
+
+    <left>
+        <VBox fx:id="sidebar" spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 1 0 0; -fx-border-color: #dee2e6;" prefWidth="250">
+            <Label text="LibraryMS" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #0d6efd;"/>
+            <Button fx:id="btnDashboard" text="Dashboard" styleClass="nav-btn" onAction="#showDashboard"/>
+            <Button fx:id="btnMembers" text="Members" styleClass="nav-btn" onAction="#showMembers"/>
+            <Button fx:id="btnBooks" text="Books" styleClass="nav-btn" onAction="#showBooks"/>
+            <Button fx:id="btnBorrowings" text="Borrowings" styleClass="nav-btn" onAction="#showBorrowings"/>
+            <Button fx:id="btnSettings" text="Settings" styleClass="nav-btn" onAction="#showSettings"/>
+            
+            <Button fx:id="btnLogout" text="Logout" styleClass="btn btn-primary" onAction="#logout"/>
+            <VBox VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </left>
+
+    <center>
+        <AnchorPane fx:id="contentPane" prefHeight="600" prefWidth="800" style="-fx-padding: 20;" />
+    </center>
+
+</BorderPane>
