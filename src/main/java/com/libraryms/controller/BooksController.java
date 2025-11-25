@@ -144,9 +144,15 @@ public class BooksController {
 
     private void loadBooks() {
         var list = FXCollections.<Book>observableArrayList();
-        try (var conn = DatabaseUtil.connect();
-             var stmt = conn.createStatement();
-             var rs = stmt.executeQuery("SELECT isbn, title, author, category, total_copies, available_copies FROM books")) {
+        try (var conn = DatabaseUtil.connect()) {
+            Integer adminId = com.libraryms.util.Session.getAdminId();
+            if (adminId == null) {
+                System.err.println("No admin logged in");
+                return;
+            }
+            var ps = conn.prepareStatement("SELECT isbn, title, author, category, total_copies, available_copies FROM books WHERE admin_id = ?");
+            ps.setInt(1, adminId);
+            var rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new Book(
                         rs.getString("isbn"),

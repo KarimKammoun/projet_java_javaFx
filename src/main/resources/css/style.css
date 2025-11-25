@@ -63,6 +63,26 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
 }
 
+.card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 12;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
+}
+
+.card-title {
+    -fx-font-size: 16;
+    -fx-font-weight: 700;
+    -fx-text-fill: #111827;
+}
+
+.card-subtitle {
+    -fx-font-size: 13;
+    -fx-text-fill: #6b7280;
+}
+
 /* Layout helpers */
 .content-pane {
     -fx-padding: 20 40;
@@ -157,4 +177,29 @@
 
 .login-form .label {
     -fx-text-fill: #6c757d;
+}
+
+/* Header and title styles */
+.header {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-border-radius: 8;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+}
+
+.header-title {
+    -fx-font-size: 24;
+    -fx-font-weight: 700;
+    -fx-text-fill: #111827;
+}
+
+.stat-label {
+    -fx-font-size: 13;
+    -fx-text-fill: #6b7280;
+}
+
+.stat-value {
+    -fx-font-size: 24;
+    -fx-font-weight: 700;
 }

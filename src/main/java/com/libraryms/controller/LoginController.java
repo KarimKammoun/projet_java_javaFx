@@ -24,6 +24,23 @@ public class LoginController {
     }
 
     @FXML
+    private void openCreateAdmin() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/create_admin.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Créer un administrateur");
+            stage.setScene(scene);
+            stage.initOwner(emailField.getScene().getWindow());
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "Impossible d'ouvrir la fenêtre: " + e.getMessage()).show();
+        }
+    }
+
+    @FXML
     private void handleLogin() {
         String emailOrPhone = emailField.getText().trim();
         String password = passwordField.getText();
@@ -48,16 +65,28 @@ public class LoginController {
 
     private void loginAsAdmin(String email, String password) {
         try (var conn = DatabaseUtil.connect();
-             var stmt = conn.prepareStatement("SELECT email, password, name FROM admin WHERE email = ?")) {
+             var stmt = conn.prepareStatement("SELECT id, email, password, name FROM admin WHERE email = ?")) {
             stmt.setString(1, email);
             var rs = stmt.executeQuery();
             if (rs.next()) {
                 String stored = rs.getString("password");
+                boolean ok = false;
+                // support legacy plain-text seed and hashed passwords
                 if (stored != null && stored.equals(password)) {
+                    ok = true;
+                } else {
+                    try {
+                        ok = at.favre.lib.crypto.bcrypt.BCrypt.verifyer().verify(password.toCharArray(), stored).verified;
+                    } catch (Exception ex) {
+                        ok = false;
+                    }
+                }
+                if (ok) {
                     Session.setAdmin(true);
                     Session.setEmail(rs.getString("email"));
                     Session.setName(rs.getString("name"));
                     Session.setPhone(null);
+                    Session.setAdminId(rs.getInt("id"));
                     SceneManager.loadScene("/fxml/main_layout.fxml");
                 } else {
                     new Alert(Alert.AlertType.ERROR, "Mot de passe incorrect").show();

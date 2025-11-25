@@ -5,6 +5,7 @@ public final class Session {
     private static String email;
     private static String name;
     private static String phone;
+    private static Integer adminId = null;
 
     private Session() {}
 
@@ -20,6 +21,9 @@ public final class Session {
     public static String getPhone() { return phone; }
     public static void setPhone(String p) { phone = p; }
 
+    public static Integer getAdminId() { return adminId; }
+    public static void setAdminId(Integer id) { adminId = id; }
+
     public static boolean isLoggedIn() {
         return (admin && email != null) || (!admin && phone != null);
     }
@@ -29,5 +33,6 @@ public final class Session {
         email = null;
         name = null;
         phone = null;
+        adminId = null;
     }
 }

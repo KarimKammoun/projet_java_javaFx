@@ -52,6 +52,9 @@ public class InitDB {
                 try {
                     ensureUsersCinColumn(conn);
                     ensureUsersPasswordColumn(conn);
+                    ensureUsersAdminIdColumn(conn);
+                    ensureBooksAdminIdColumn(conn);
+                    ensureCopiesAdminIdColumn(conn);
                     ensureBorrowingBookTitleColumn(conn);
                 } catch (Exception e) {
                     // log and continue
@@ -101,6 +104,60 @@ public class InitDB {
         }
     }
 
+    private static void ensureUsersAdminIdColumn(Connection conn) {
+        try (var stmt = conn.createStatement()) {
+            try (var rs = stmt.executeQuery("PRAGMA table_info('users')")) {
+                boolean hasAdminId = false;
+                while (rs.next()) {
+                    String name = rs.getString("name");
+                    if ("admin_id".equalsIgnoreCase(name)) { hasAdminId = true; break; }
+                }
+                if (!hasAdminId) {
+                    stmt.execute("ALTER TABLE users ADD COLUMN admin_id INTEGER");
+                    System.out.println("Added 'admin_id' column to users table.");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error ensuring users.admin_id column: " + e.getMessage());
+        }
+    }
+
+    private static void ensureBooksAdminIdColumn(Connection conn) {
+        try (var stmt = conn.createStatement()) {
+            try (var rs = stmt.executeQuery("PRAGMA table_info('books')")) {
+                boolean hasAdminId = false;
+                while (rs.next()) {
+                    String name = rs.getString("name");
+                    if ("admin_id".equalsIgnoreCase(name)) { hasAdminId = true; break; }
+                }
+                if (!hasAdminId) {
+                    stmt.execute("ALTER TABLE books ADD COLUMN admin_id INTEGER");
+                    System.out.println("Added 'admin_id' column to books table.");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error ensuring books.admin_id column: " + e.getMessage());
+        }
+    }
+
+    private static void ensureCopiesAdminIdColumn(Connection conn) {
+        try (var stmt = conn.createStatement()) {
+            try (var rs = stmt.executeQuery("PRAGMA table_info('copies')")) {
+                boolean hasAdminId = false;
+                while (rs.next()) {
+                    String name = rs.getString("name");
+                    if ("admin_id".equalsIgnoreCase(name)) { hasAdminId = true; break; }
+                }
+                if (!hasAdminId) {
+                    stmt.execute("ALTER TABLE copies ADD COLUMN admin_id INTEGER");
+                    System.out.println("Added 'admin_id' column to copies table.");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error ensuring copies.admin_id column: " + e.getMessage());
+        }
+    }
+
     private static void dropCreateTables(Statement stmt) throws Exception {
         // Drop existing tables (if any)
         String[] dropStatements = {
@@ -124,33 +181,39 @@ public class InitDB {
                 "password TEXT NOT NULL, " +
                 "name TEXT NOT NULL)");
 
-        // Create users table
+        // Create users table (each user can be linked to an admin via admin_id)
         stmt.execute("CREATE TABLE users (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "phone TEXT UNIQUE NOT NULL, " +
-                "name TEXT NOT NULL, " +
-                "email TEXT UNIQUE, " +
-                "birthdate DATE, " +
-                "type TEXT CHECK (type IN ('Standard', 'Premium')) DEFAULT 'Standard', " +
-                "borrow_limit INTEGER DEFAULT 3, " +
-                "password TEXT NOT NULL, " +
-                "cin TEXT)");
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "phone TEXT UNIQUE NOT NULL, " +
+            "name TEXT NOT NULL, " +
+            "email TEXT UNIQUE, " +
+            "birthdate DATE, " +
+            "type TEXT CHECK (type IN ('Standard', 'Premium')) DEFAULT 'Standard', " +
+            "borrow_limit INTEGER DEFAULT 3, " +
+            "password TEXT NOT NULL, " +
+            "cin TEXT, " +
+            "admin_id INTEGER, " +
+            "FOREIGN KEY(admin_id) REFERENCES admin(id) ON DELETE SET NULL) ");
 
-        // Create books table
+        // Create books table (each book linked to an admin)
         stmt.execute("CREATE TABLE books (" +
                 "isbn TEXT PRIMARY KEY, " +
                 "title TEXT NOT NULL, " +
                 "author TEXT NOT NULL, " +
                 "category TEXT NOT NULL, " +
                 "total_copies INTEGER DEFAULT 1, " +
-                "available_copies INTEGER DEFAULT 1)");
+                "available_copies INTEGER DEFAULT 1, " +
+                "admin_id INTEGER, " +
+                "FOREIGN KEY(admin_id) REFERENCES admin(id) ON DELETE SET NULL)");
 
-        // Create copies table (no location column)
+        // Create copies table (each copy linked to an admin)
         stmt.execute("CREATE TABLE copies (" +
             "copy_id TEXT PRIMARY KEY, " +
             "isbn TEXT NOT NULL, " +
             "status TEXT CHECK (status IN ('Available', 'Borrowed', 'Lost')) DEFAULT 'Available', " +
-            "FOREIGN KEY(isbn) REFERENCES books(isbn) ON DELETE CASCADE)");
+            "admin_id INTEGER, " +
+            "FOREIGN KEY(isbn) REFERENCES books(isbn) ON DELETE CASCADE, " +
+            "FOREIGN KEY(admin_id) REFERENCES admin(id) ON DELETE SET NULL)");
 
         // Create borrowing table (includes book_title)
         stmt.execute("CREATE TABLE borrowing (" +
@@ -207,8 +270,13 @@ public class InitDB {
             "noor.hamza@email.com", "ibrahim.tarek@email.com", "soumaya.abdel@email.com", "zaineb.marwa@email.com", "hassan.ahmed@email.com"
         };
 
+        int adminId = 1; // default admin id
+        try (Statement q = conn.createStatement(); ResultSet qrs = q.executeQuery("SELECT id FROM admin WHERE email='admin@library.com'")) {
+            if (qrs.next()) adminId = qrs.getInt(1);
+        } catch (Exception ignored) {}
+
         try (PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO users (phone, name, email, birthdate, type, borrow_limit, password, cin) VALUES (?,?,?,?,?,?,?,?)")) {
+            "INSERT INTO users (phone, name, email, birthdate, type, borrow_limit, password, cin, admin_id) VALUES (?,?,?,?,?,?,?,?,?)")) {
             for (int i = 0; i < 10; i++) {
                 String phone = String.format("+216%08d", 20000000 + i);
                 memberPhones.add(phone);
@@ -222,6 +290,7 @@ public class InitDB {
                 ps.setInt(6, (i % 2 == 0) ? 3 : 5);
                 ps.setString(7, hashedPassword);
                 ps.setString(8, realCins[i]);
+                ps.setInt(9, adminId); // link seeded member to first admin
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -280,7 +349,7 @@ public class InitDB {
         List<String> isbns = new ArrayList<>();
         List<Integer> copiesPerBook = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO books (isbn, title, author, category, total_copies, available_copies) VALUES (?,?,?,?,?,?)")) {
+                "INSERT INTO books (isbn, title, author, category, total_copies, available_copies, admin_id) VALUES (?,?,?,?,?,?,?)")) {
             for (int i = 0; i < 100; i++) {
                 String isbn = String.format("978-%04d-%05d", 1000 + (i / 100), 10000 + i);
                 String title = realTitles[i % realTitles.length];
@@ -293,6 +362,7 @@ public class InitDB {
                 ps.setString(4, category);
                 ps.setInt(5, total);
                 ps.setInt(6, total); // start with all available, will adjust after borrowings
+                ps.setInt(7, adminId); // link book to first admin
                 ps.addBatch();
                 isbns.add(isbn);
                 copiesPerBook.add(total);
@@ -304,7 +374,7 @@ public class InitDB {
         List<String> availableCopies = new ArrayList<>();
         Map<String, String> copyToTitle = new HashMap<>();
         try (PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO copies (copy_id, isbn, status) VALUES (?,?,?)")) {
+                "INSERT INTO copies (copy_id, isbn, status, admin_id) VALUES (?,?,?,?)")) {
             for (int i = 0; i < isbns.size(); i++) {
                 String isbn = isbns.get(i);
                 String title = (i < realTitles.length) ? realTitles[i % realTitles.length] : "";
@@ -314,6 +384,7 @@ public class InitDB {
                     ps.setString(1, copyId);
                     ps.setString(2, isbn);
                     ps.setString(3, "Available");
+                    ps.setInt(4, adminId); // link copy to first admin
                     ps.addBatch();
                     availableCopies.add(copyId);
                     copyToTitle.put(copyId, title);
@@ -325,7 +396,7 @@ public class InitDB {
         // Borrowings from Jan 2025 to today
         LocalDate start = LocalDate.of(2025, 1, 5);
         LocalDate today = LocalDate.now();
-        int adminId = 1; // first admin
+        // adminId is determined earlier when seeding users
 
         try (PreparedStatement insertBorrow = conn.prepareStatement(
                  "INSERT INTO borrowing (copy_id, user_phone, admin_id, borrow_date, due_date, return_date, status, book_title) " +

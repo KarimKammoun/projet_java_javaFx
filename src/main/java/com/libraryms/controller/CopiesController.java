@@ -49,11 +49,17 @@ public class CopiesController {
 
     private void loadCopies() {
         var list = FXCollections.<Copy>observableArrayList();
-        try (var conn = DatabaseUtil.connect();
-             var stmt = conn.createStatement();
-             var rs = stmt.executeQuery(
-                     "SELECT c.copy_id, c.isbn, b.title, c.status, c.location " +
-                             "FROM copies c JOIN books b ON c.isbn = b.isbn")) {
+        try (var conn = DatabaseUtil.connect()) {
+            Integer adminId = com.libraryms.util.Session.getAdminId();
+            if (adminId == null) {
+                System.err.println("No admin logged in");
+                return;
+            }
+            var ps = conn.prepareStatement(
+                    "SELECT c.copy_id, c.isbn, b.title, c.status, c.location " +
+                            "FROM copies c JOIN books b ON c.isbn = b.isbn WHERE c.admin_id = ?");
+            ps.setInt(1, adminId);
+            var rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new Copy(
                         rs.getString("copy_id"),

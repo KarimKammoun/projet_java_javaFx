@@ -167,13 +167,16 @@ public class AddMemberController {
             }
 
             String hashedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
-            try (PreparedStatement ins = conn.prepareStatement("INSERT INTO users (phone, name, email, type, cin, password) VALUES (?, ?, ?, ?, ?, ?)")) {
+            try (PreparedStatement ins = conn.prepareStatement("INSERT INTO users (phone, name, email, type, cin, password, admin_id) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
                 ins.setString(1, phone);
                 ins.setString(2, name);
                 ins.setString(3, email.isEmpty() ? null : email);
                 ins.setString(4, type);
                 ins.setString(5, cin.isEmpty() ? null : cin);
                 ins.setString(6, hashedPassword);
+                // link member to current admin if available
+                Integer adminId = com.libraryms.util.Session.getAdminId();
+                if (adminId != null) ins.setInt(7, adminId); else ins.setNull(7, java.sql.Types.INTEGER);
                 ins.executeUpdate();
             }
 

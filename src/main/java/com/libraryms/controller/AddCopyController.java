@@ -106,13 +106,15 @@ public class AddCopyController {
             }
 
             // insert copies
-            try (PreparedStatement insCopy = conn.prepareStatement("INSERT INTO copies (copy_id, isbn, status, location) VALUES (?, ?, 'Available', ?)")) {
+            try (PreparedStatement insCopy = conn.prepareStatement("INSERT INTO copies (copy_id, isbn, status, location, admin_id) VALUES (?, ?, 'Available', ?, ?)")) {
                 for (int i = 1; i <= n; i++) {
                     String shortId = UUID.randomUUID().toString().substring(0,8).toUpperCase();
                     String copyId = isbn.replaceAll("[^A-Za-z0-9]", "") + "-" + System.currentTimeMillis()%100000 + "-" + shortId;
                     insCopy.setString(1, copyId);
                     insCopy.setString(2, isbn);
                     insCopy.setString(3, location);
+                    Integer adminId = com.libraryms.util.Session.getAdminId();
+                    if (adminId != null) insCopy.setInt(4, adminId); else insCopy.setNull(4, java.sql.Types.INTEGER);
                     insCopy.executeUpdate();
                 }
             }

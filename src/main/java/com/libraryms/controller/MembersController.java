@@ -76,9 +76,15 @@ public class MembersController {
 
     private void loadMembers() {
         var list = FXCollections.<Member>observableArrayList();
-        try (var conn = DatabaseUtil.connect();
-             var stmt = conn.createStatement();
-             var rs = stmt.executeQuery("SELECT phone, name, email, type, cin FROM users")) {
+        try (var conn = DatabaseUtil.connect()) {
+            Integer adminId = com.libraryms.util.Session.getAdminId();
+            if (adminId == null) {
+                System.err.println("No admin logged in");
+                return;
+            }
+            var ps = conn.prepareStatement("SELECT phone, name, email, type, cin FROM users WHERE admin_id = ?");
+            ps.setInt(1, adminId);
+            var rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new Member(
                         rs.getString("phone"),

@@ -95,12 +95,14 @@ public class AddBookController {
                             int diff = newTotal - originalTotalCopies;
                             if (diff > 0) {
                                 // add diff copies
-                                try (PreparedStatement insCopy = conn.prepareStatement("INSERT INTO copies (copy_id, isbn, status) VALUES (?, ?, 'Available')")) {
+                                try (PreparedStatement insCopy = conn.prepareStatement("INSERT INTO copies (copy_id, isbn, status, admin_id) VALUES (?, ?, 'Available', ?)")) {
                                     for (int i = 1; i <= diff; i++) {
                                         String shortId = java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
                                         String copyId = originalIsbn.replaceAll("[^A-Za-z0-9]", "") + "-" + (originalTotalCopies + i) + "-" + shortId;
                                         insCopy.setString(1, copyId);
                                         insCopy.setString(2, originalIsbn);
+                                        Integer adminId = com.libraryms.util.Session.getAdminId();
+                                        if (adminId != null) insCopy.setInt(3, adminId); else insCopy.setNull(3, java.sql.Types.INTEGER);
                                         insCopy.executeUpdate();
                                     }
                                 }
@@ -168,23 +170,27 @@ public class AddBookController {
             }
 
             // Insert book
-            try (PreparedStatement ins = conn.prepareStatement("INSERT INTO books (isbn, title, author, category, total_copies, available_copies) VALUES (?, ?, ?, ?, ?, ?)")) {
+            try (PreparedStatement ins = conn.prepareStatement("INSERT INTO books (isbn, title, author, category, total_copies, available_copies, admin_id) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
                 ins.setString(1, isbn);
                 ins.setString(2, title);
                 ins.setString(3, author);
                 ins.setString(4, category);
                 ins.setInt(5, copies);
                 ins.setInt(6, copies);
+                Integer adminId = com.libraryms.util.Session.getAdminId();
+                if (adminId != null) ins.setInt(7, adminId); else ins.setNull(7, java.sql.Types.INTEGER);
                 ins.executeUpdate();
             }
 
             // Insert copies
-            try (PreparedStatement insCopy = conn.prepareStatement("INSERT INTO copies (copy_id, isbn, status) VALUES (?, ?, 'Available')")) {
+            try (PreparedStatement insCopy = conn.prepareStatement("INSERT INTO copies (copy_id, isbn, status, admin_id) VALUES (?, ?, 'Available', ?)")) {
                 for (int i = 1; i <= copies; i++) {
                     String shortId = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
                     String copyId = isbn.replaceAll("[^A-Za-z0-9]", "") + "-" + i + "-" + shortId;
                     insCopy.setString(1, copyId);
                     insCopy.setString(2, isbn);
+                    Integer adminId = com.libraryms.util.Session.getAdminId();
+                    if (adminId != null) insCopy.setInt(3, adminId); else insCopy.setNull(3, java.sql.Types.INTEGER);
                     insCopy.executeUpdate();
                 }
             }

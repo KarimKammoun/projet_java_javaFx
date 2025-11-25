@@ -82,6 +82,11 @@ public class BorrowingsController {
     private void loadBorrowings() {
         var list = FXCollections.<BorrowingAdmin>observableArrayList();
         try (var conn = DatabaseUtil.connect()) {
+            Integer adminId = com.libraryms.util.Session.getAdminId();
+            if (adminId == null) {
+                System.err.println("No admin logged in");
+                return;
+            }
             boolean hasBookTitle = false;
             try (var pragmaStmt = conn.createStatement();
                  var prs = pragmaStmt.executeQuery("PRAGMA table_info('borrowing')")) {
@@ -94,16 +99,18 @@ public class BorrowingsController {
             String sql;
             if (hasBookTitle) {
                 sql = "SELECT b.id, b.copy_id, b.book_title, u.name, b.borrow_date, b.due_date, b.status " +
-                        "FROM borrowing b JOIN users u ON b.user_phone = u.phone";
+                        "FROM borrowing b JOIN users u ON b.user_phone = u.phone WHERE b.admin_id = ?";
             } else {
                 sql = "SELECT b.id, b.copy_id, k.title AS book_title, u.name, b.borrow_date, b.due_date, b.status " +
                         "FROM borrowing b " +
                         "JOIN copies c ON b.copy_id = c.copy_id " +
                         "JOIN books k ON c.isbn = k.isbn " +
-                        "JOIN users u ON b.user_phone = u.phone";
+                        "JOIN users u ON b.user_phone = u.phone WHERE b.admin_id = ?";
             }
 
-            try (var stmt = conn.createStatement(); var rs = stmt.executeQuery(sql)) {
+            try (var ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, adminId);
+                var rs = ps.executeQuery();
                 while (rs.next()) {
                     try {
                         String borrowDateStr = rs.getString("borrow_date");

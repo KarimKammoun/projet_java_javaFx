@@ -6,65 +6,99 @@
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.libraryms.controller.DashboardController"
-      style="-fx-background-color: #f8f9fa;" spacing="20">
+      style="-fx-background-color: #f0f4f8;" spacing="20">
 
+    <padding><Insets top="20" right="40" bottom="20" left="40"/></padding>
 
-    <HBox spacing="20" style="-fx-padding: 0 40;">
- 
+    <!-- Header -->
+    <VBox spacing="4">
+        <Label text="Dashboard" style="-fx-font-size: 28; -fx-font-weight: 700; -fx-text-fill: #111827;"/>
+        <Label text="Welcome back! Here's your library overview." style="-fx-font-size: 14; -fx-text-fill: #6b7280;"/>
+    </VBox>
 
-        <!-- Content -->
-        <VBox VBox.vgrow="ALWAYS" spacing="20" style="-fx-padding: 20;">
-
-            <!-- Stats -->
-            <HBox spacing="15">
-                <VBox styleClass="stat-card" prefWidth="180">
-                    <Label text="Total Books" style="-fx-text-fill: #6c757d;"/>
-                    <Label fx:id="totalBooks" text="0" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #0d6efd;"/>
-                </VBox>
-                <VBox styleClass="stat-card" prefWidth="180">
-                    <Label text="Total Copies" style="-fx-text-fill: #6c757d;"/>
-                    <Label fx:id="totalCopies" text="0" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #198754;"/>
-                </VBox>
-                <VBox styleClass="stat-card" prefWidth="180">
-                    <Label text="Available" style="-fx-text-fill: #6c757d;"/>
-                    <Label fx:id="availableCopies" text="0" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #28a745;"/>
-                </VBox>
-                <VBox styleClass="stat-card" prefWidth="180">
-                    <Label text="Total Members" style="-fx-text-fill: #6c757d;"/>
-                    <Label fx:id="totalMembers" text="0" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #fd7e14;"/>
-                </VBox>
-                <VBox styleClass="stat-card" prefWidth="180">
-                    <Label text="Active Borrowings" style="-fx-text-fill: #6c757d;"/>
-                    <Label fx:id="activeBorrowings" text="0" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #dc3545;"/>
+    <!-- Statistics Cards -->
+    <HBox spacing="15">
+        <!-- Total Books -->
+        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS" style="-fx-padding: 20;">
+            <HBox spacing="12">
+                <Label text="📚" style="-fx-font-size: 24;"/>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Total Books" styleClass="stat-label"/>
+                    <Label fx:id="totalBooks" text="0" styleClass="stat-value" style="-fx-text-fill: #2563eb;"/>
                 </VBox>
             </HBox>
+        </VBox>
 
-            <!-- Recent Borrowings -->
-            <VBox spacing="10">
-                <Label text="Recent Borrowings" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
-                <TableView fx:id="recentTable" prefHeight="200">
-                    <columns>
-                        <TableColumn text="Copy ID" prefWidth="100"/>
-                        <TableColumn text="Member" prefWidth="150"/>
-                        <TableColumn text="Borrow Date" prefWidth="120"/>
-                        <TableColumn text="Due Date" prefWidth="120"/>
-                        <TableColumn text="Status" prefWidth="100"/>
-                    </columns>
-                </TableView>
-            </VBox>
+        <!-- Total Copies -->
+        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS" style="-fx-padding: 20;">
+            <HBox spacing="12">
+                <Label text="📋" style="-fx-font-size: 24;"/>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Total Copies" styleClass="stat-label"/>
+                    <Label fx:id="totalCopies" text="0" styleClass="stat-value" style="-fx-text-fill: #10b981;"/>
+                </VBox>
+            </HBox>
+        </VBox>
 
-            <!-- Trend Chart -->
-            <VBox spacing="10">
-                <Label text="Borrowing Trend (Last 6 Months)" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
-                <LineChart fx:id="trendChart" prefHeight="300">
-                    <xAxis>
-                        <CategoryAxis/>
-                    </xAxis>
-                    <yAxis>
-                        <NumberAxis/>
-                    </yAxis>
-                </LineChart>
-            </VBox>
+        <!-- Available Copies -->
+        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS" style="-fx-padding: 20;">
+            <HBox spacing="12">
+                <Label text="✅" style="-fx-font-size: 24;"/>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Available" styleClass="stat-label"/>
+                    <Label fx:id="availableCopies" text="0" styleClass="stat-value" style="-fx-text-fill: #16a34a;"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- Total Members -->
+        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS" style="-fx-padding: 20;">
+            <HBox spacing="12">
+                <Label text="👥" style="-fx-font-size: 24;"/>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Total Members" styleClass="stat-label"/>
+                    <Label fx:id="totalMembers" text="0" styleClass="stat-value" style="-fx-text-fill: #f59e0b;"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- Active Borrowings -->
+        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS" style="-fx-padding: 20;">
+            <HBox spacing="12">
+                <Label text="📦" style="-fx-font-size: 24;"/>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Active Borrowings" styleClass="stat-label"/>
+                    <Label fx:id="activeBorrowings" text="0" styleClass="stat-value" style="-fx-text-fill: #ef4444;"/>
+                </VBox>
+            </HBox>
         </VBox>
     </HBox>
+
+    <!-- Recent Activity Section -->
+    <VBox spacing="12" styleClass="card" style="-fx-padding: 20;">
+        <Label text="Recent Borrowings" styleClass="card-title"/>
+        <TableView fx:id="recentTable" prefHeight="250" styleClass="table-view">
+            <columns>
+                <TableColumn text="Copy ID" prefWidth="100"/>
+                <TableColumn text="Member" prefWidth="150"/>
+                <TableColumn text="Borrow Date" prefWidth="120"/>
+                <TableColumn text="Due Date" prefWidth="120"/>
+                <TableColumn text="Status" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Trend Chart Section -->
+    <VBox spacing="12" styleClass="card" style="-fx-padding: 20; -fx-pref-height: 350;">
+        <Label text="Borrowing Trend (Last 30 Days)" styleClass="card-title"/>
+        <LineChart fx:id="trendChart" prefHeight="280" style="-fx-padding: 10;">
+            <xAxis>
+                <CategoryAxis/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis/>
+            </yAxis>
+        </LineChart>
+    </VBox>
+
 </VBox>
