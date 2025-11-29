@@ -29,6 +29,7 @@ public class LoginController {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/create_admin.fxml"));
             javafx.scene.Parent root = loader.load();
             javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             javafx.stage.Stage stage = new javafx.stage.Stage();
             stage.setTitle("Créer un administrateur");
             stage.setScene(scene);

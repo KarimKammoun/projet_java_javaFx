@@ -81,6 +81,7 @@ public class CopiesController {
         try {
             javafx.scene.Parent root = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/add_copy.fxml")).load();
             var scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             var stage = new javafx.stage.Stage();
             stage.setTitle("Add Copies");
             stage.setScene(scene);
@@ -100,6 +101,7 @@ public class CopiesController {
                 var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/add_copy.fxml"));
             javafx.scene.Parent root = loader.load();
             var scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             var stage = new javafx.stage.Stage();
             stage.setTitle("Edit Copy (enter Copy ID to load)");
             stage.setScene(scene);

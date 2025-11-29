@@ -107,6 +107,7 @@ public class MembersController {
         try {
             javafx.scene.Parent root = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/add_member.fxml")).load();
             var scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             var stage = new javafx.stage.Stage();
             stage.setTitle("Add Member");
             stage.setScene(scene);
@@ -149,6 +150,7 @@ public class MembersController {
             grid.add(buttons, 1, 2);
 
             var promptScene = new javafx.scene.Scene(grid);
+            com.libraryms.util.SceneManager.applyGlobalStyles(promptScene);
             var promptStage = new javafx.stage.Stage();
             promptStage.setTitle("Load Member to Edit");
             promptStage.setScene(promptScene);
@@ -169,6 +171,7 @@ public class MembersController {
                     promptStage.close();
                     // show edit dialog
                     var scene = new javafx.scene.Scene(editRoot);
+                    com.libraryms.util.SceneManager.applyGlobalStyles(scene);
                     var stage = new javafx.stage.Stage();
                     stage.setTitle("Edit Member - " + email);
                     stage.setScene(scene);
@@ -194,6 +197,7 @@ public class MembersController {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/delete_member.fxml"));
             javafx.scene.Parent root = loader.load();
             javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             javafx.stage.Stage stage = new javafx.stage.Stage();
             stage.setTitle("Supprimer un membre");
             stage.setScene(scene);

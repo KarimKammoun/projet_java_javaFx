@@ -80,6 +80,7 @@ public class BooksController {
             var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/add_book.fxml"));
             javafx.scene.Parent root = loader.load();
             var scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             var stage = new javafx.stage.Stage();
             stage.setTitle("Add Book");
             stage.setScene(scene);
@@ -112,6 +113,7 @@ public class BooksController {
                     ((com.libraryms.controller.pop_up.AddBookController) controller).loadForEdit(isbn);
                 }
                 var scene = new javafx.scene.Scene(root);
+                com.libraryms.util.SceneManager.applyGlobalStyles(scene);
                 var stage = new javafx.stage.Stage();
                 stage.setTitle("Edit Book - " + isbn);
                 stage.setScene(scene);
@@ -130,6 +132,7 @@ public class BooksController {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/delete_book.fxml"));
             javafx.scene.Parent root = loader.load();
             javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             javafx.stage.Stage stage = new javafx.stage.Stage();
             stage.setTitle("Supprimer un livre");
             stage.setScene(scene);

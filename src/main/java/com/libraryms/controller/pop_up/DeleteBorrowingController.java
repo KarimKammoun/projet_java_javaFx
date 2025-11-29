@@ -48,6 +48,7 @@ public class DeleteBorrowingController {
                     ((ConfirmDeleteController) controller).setContext("borrowing", idText, "Supprimer l'emprunt ID " + borrowingId + " ?");
                 }
                 javafx.scene.Scene scene = new javafx.scene.Scene(root);
+                com.libraryms.util.SceneManager.applyGlobalStyles(scene);
                 javafx.stage.Stage stage = new javafx.stage.Stage();
                 stage.setTitle("Confirmer la suppression");
                 stage.setScene(scene);

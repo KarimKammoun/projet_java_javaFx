@@ -48,4 +48,16 @@ public class SceneManager {
             new Alert(Alert.AlertType.ERROR, "Erreur de chargement: " + fxml + "\n" + e.getMessage()).show();
         }
     }
+
+    /**
+     * Apply the global stylesheet to a scene (useful for pop-up windows).
+     */
+    public static void applyGlobalStyles(Scene scene) {
+        try {
+            String css = SceneManager.class.getResource("/css/style.css").toExternalForm();
+            if (!scene.getStylesheets().contains(css)) scene.getStylesheets().add(css);
+        } catch (Exception ignored) {
+            // ignore if resource not found
+        }
+    }
 }

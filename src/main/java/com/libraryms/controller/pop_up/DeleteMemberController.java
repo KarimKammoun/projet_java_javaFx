@@ -58,6 +58,7 @@ public class DeleteMemberController {
                 ((ConfirmDeleteController) controller).setContext("user", phone, "Supprimer le membre " + name + " (" + phone + ") ?");
             }
             javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             javafx.stage.Stage stage = new javafx.stage.Stage();
             stage.setTitle("Confirmer la suppression");
             stage.setScene(scene);

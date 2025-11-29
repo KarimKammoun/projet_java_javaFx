@@ -144,6 +144,7 @@ public class BorrowingsController {
         try {
             javafx.scene.Parent root = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/add_borrowing.fxml")).load();
             var scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             var stage = new javafx.stage.Stage();
             stage.setTitle("New Borrowing");
             stage.setScene(scene);
@@ -176,6 +177,7 @@ public class BorrowingsController {
                     ((com.libraryms.controller.pop_up.AddBorrowingController) controller).loadForEdit(id);
                 }
                 var scene = new javafx.scene.Scene(root);
+                com.libraryms.util.SceneManager.applyGlobalStyles(scene);
                 var stage = new javafx.stage.Stage();
                 stage.setTitle("Edit Borrowing - " + id);
                 stage.setScene(scene);
@@ -196,6 +198,7 @@ public class BorrowingsController {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/delete_borrowing.fxml"));
             javafx.scene.Parent root = loader.load();
             javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             javafx.stage.Stage stage = new javafx.stage.Stage();
             stage.setTitle("Supprimer un emprunt");
             stage.setScene(scene);
@@ -214,6 +217,7 @@ public class BorrowingsController {
             var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/mark_received.fxml"));
             javafx.scene.Parent root = loader.load();
             var scene = new javafx.scene.Scene(root);
+            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
             var stage = new javafx.stage.Stage();
             stage.setTitle("Mark Received");
             stage.setScene(scene);
