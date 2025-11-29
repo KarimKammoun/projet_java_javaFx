@@ -44,7 +44,7 @@ public class MainLayoutController {
     }
 
     @FXML private void showDashboard() { loadIntoContent("/fxml/admin/dashboard.fxml"); }
-    @FXML private void showMembers() { loadIntoContent("/fxml/user/members.fxml"); }
+    @FXML private void showMembers() { loadIntoContent("/fxml/admin/members.fxml"); }
     @FXML private void showBooks() { loadIntoContent("/fxml/admin/books.fxml"); }
     @FXML private void showBorrowings() { loadIntoContent("/fxml/admin/borrowings.fxml"); }
     @FXML private void showSettings() { loadIntoContent("/fxml/admin/settings.fxml"); }

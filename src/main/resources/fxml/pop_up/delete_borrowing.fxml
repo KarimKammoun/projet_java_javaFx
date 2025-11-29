@@ -4,8 +4,8 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="com.libraryms.controller.pop_up.DeleteBorrowingController"
-      spacing="10" alignment="CENTER_LEFT" styleClass="card">
+        fx:controller="com.libraryms.controller.pop_up.VerifyDeleteController"
+            spacing="10" alignment="CENTER_LEFT" styleClass="card">
 
     <Label text="Entrez l'ID et le nom du membre pour confirmer la suppression de l'emprunt" wrapText="true" styleClass="small-label"/>
 
@@ -16,6 +16,9 @@
         <Label text="Nom du membre:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="nameField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
     </GridPane>
+
+    <!-- hidden type marker for unified controller -->
+    <Label fx:id="entityTypeLabel" text="borrowing" visible="false" />
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
         <Button text="Annuler" onAction="#onCancel" styleClass="button btn-secondary"/>

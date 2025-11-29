@@ -1,4 +1,4 @@
-package com.libraryms.controller.user;
+package com.libraryms.controller.admin;
 
 import com.libraryms.util.DatabaseUtil;
 import javafx.collections.FXCollections;

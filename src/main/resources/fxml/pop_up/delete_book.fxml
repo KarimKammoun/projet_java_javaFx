@@ -4,8 +4,8 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="com.libraryms.controller.pop_up.DeleteBookController"
-      spacing="10" alignment="CENTER_LEFT" styleClass="card">
+        fx:controller="com.libraryms.controller.pop_up.VerifyDeleteController"
+            spacing="10" alignment="CENTER_LEFT" styleClass="card">
 
     <Label text="Entrez ISBN et Titre du livre pour confirmer la suppression" wrapText="true" styleClass="small-label"/>
 
@@ -16,6 +16,9 @@
         <Label text="Titre:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="titleField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
     </GridPane>
+
+    <!-- hidden type marker for unified controller -->
+    <Label fx:id="entityTypeLabel" text="book" visible="false" />
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
         <Button text="Annuler" onAction="#onCancel" styleClass="button btn-secondary"/>

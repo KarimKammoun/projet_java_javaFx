@@ -177,7 +177,7 @@ public class DashboardController {
     }
 
     @FXML private void logout() { SceneManager.loadScene("/fxml/login/login.fxml"); }
-    @FXML private void showMembers() { SceneManager.loadScene("/fxml/user/members.fxml"); }
+    @FXML private void showMembers() { SceneManager.loadScene("/fxml/admin/members.fxml"); }
     @FXML private void showBooks() { SceneManager.loadScene("/fxml/admin/books.fxml"); }
     @FXML private void showCopies() { SceneManager.loadScene("/fxml/admin/copies.fxml"); }
     @FXML private void showBorrowings() { SceneManager.loadScene("/fxml/admin/borrowings.fxml"); }

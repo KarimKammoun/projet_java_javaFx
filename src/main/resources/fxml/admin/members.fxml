@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="com.libraryms.controller.user.MembersController"
+    fx:controller="com.libraryms.controller.admin.MembersController"
       style="-fx-background-color: #f8f9fa;" spacing="20">
 
     <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
