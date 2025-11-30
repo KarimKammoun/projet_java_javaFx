@@ -66,7 +66,7 @@ public class LoginController {
 
     private void loginAsAdmin(String email, String password) {
         try (var conn = DatabaseUtil.connect();
-             var stmt = conn.prepareStatement("SELECT id, email, password, name FROM admin WHERE email = ?")) {
+            var stmt = conn.prepareStatement("SELECT id, email, password, name FROM admin WHERE email = ?")) {
             stmt.setString(1, email);
             var rs = stmt.executeQuery();
             if (rs.next()) {
@@ -103,7 +103,7 @@ public class LoginController {
 
     private void loginAsMember(String phone, String password) {
         try (var conn = DatabaseUtil.connect();
-             var stmt = conn.prepareStatement("SELECT phone, name, email, password, admin_id FROM users WHERE phone = ?")) {
+            var stmt = conn.prepareStatement("SELECT phone, name, email, password, admin_id FROM users WHERE phone = ?")) {
             stmt.setString(1, phone);
             var rs = stmt.executeQuery();
             if (rs.next()) {

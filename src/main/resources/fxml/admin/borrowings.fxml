@@ -8,11 +8,10 @@
     fx:controller="com.libraryms.controller.admin.BorrowingsController"
       style="-fx-background-color: #f8f9fa;" spacing="20">
 
-    <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
+    <HBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
         <Label text="Borrowings Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
         <HBox HBox.hgrow="ALWAYS"/>
-        <Button fx:id="deleteBorrowingBtn" text="Delete Selected" styleClass="btn btn-danger" onAction="#deleteSelectedBorrowing"/>
-        <Button fx:id="editBorrowingBtn" text="Edit Selected" styleClass="btn btn-secondary" onAction="#openEditBorrowing"/>
+        <Button fx:id="deleteBorrowingBtn" text="Delete Borrowing" styleClass="btn btn-danger" onAction="#deleteSelectedBorrowing"/>
         <Button fx:id="markReceivedBtn" text="Mark Received" styleClass="btn btn-success" onAction="#markSelectedReceived"/>
         <Button fx:id="newBorrowingBtn" text="New Borrowing" styleClass="btn btn-primary" onAction="#openAddBorrowing"/>
     </HBox>

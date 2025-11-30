@@ -8,11 +8,10 @@
     fx:controller="com.libraryms.controller.admin.MembersController"
       style="-fx-background-color: #f8f9fa;" spacing="20">
 
-    <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
+    <HBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
         <Label text="Members Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
         <HBox HBox.hgrow="ALWAYS"/>
-        <Button fx:id="deleteMemberBtn" text="Delete Selected" styleClass="btn btn-danger" onAction="#deleteSelectedMember"/>
-        <Button fx:id="editMemberBtn" text="Edit Selected" styleClass="btn btn-secondary" onAction="#openEditMember"/>
+        <Button fx:id="deleteMemberBtn" text="Delete Member" styleClass="btn btn-danger" onAction="#deleteSelectedMember"/>
         <Button fx:id="addMemberBtn" text="Add Member" styleClass="btn btn-primary" onAction="#openAddMember"/>
     </HBox>
 

@@ -8,11 +8,10 @@
     fx:controller="com.libraryms.controller.admin.BooksController"
       style="-fx-background-color: #f8f9fa;" spacing="20">
 
-    <HBox style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
+    <HBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-width: 0 0 1 0; -fx-border-color: #dee2e6;">
         <Label text="Books Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
         <HBox HBox.hgrow="ALWAYS"/>
-        <Button fx:id="deleteBookBtn" text="Delete Selected" styleClass="btn btn-danger" onAction="#deleteSelectedBook"/>
-        <Button fx:id="editBookBtn" text="Edit Selected" styleClass="btn btn-secondary" onAction="#openEditBook"/>
+        <Button fx:id="deleteBookBtn" text="Delete Book" styleClass="btn btn-danger" onAction="#deleteSelectedBook"/>
         <Button fx:id="addBookBtn" text="Add Book" styleClass="btn btn-primary" onAction="#openAddBook"/>
     </HBox>
 

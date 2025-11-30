@@ -17,10 +17,10 @@ public class App extends Application {
 
         SceneManager.setStage(stage);
         SceneManager.loadScene("/fxml/login/login.fxml");
-        stage.setTitle("LibraryMS");
+        stage.setTitle("Library Management System");
         stage.setWidth(1200);
         stage.setHeight(800);
-        stage.setResizable(false);
+        stage.setResizable(true);
         stage.show();
     }
 

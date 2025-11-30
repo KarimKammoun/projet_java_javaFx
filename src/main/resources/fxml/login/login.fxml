@@ -19,9 +19,9 @@
             <ToggleButton fx:id="adminBtn" text="Admin" selected="true" styleClass="toggle-left"/>
             <ToggleButton fx:id="memberBtn" text="Member" styleClass="toggle-right"/>
         </HBox>
-            <Button text="Créer un admin" onAction="#openCreateAdmin" styleClass="btn btn-ghost"/>
+        <HBox spacing="8">
             <Button text="Login" onAction="#handleLogin" styleClass="login-btn"/>
-        <Label text="Admin: admin@library.com / password: admin123" style="-fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
-        <Label text="Member: +216000000001 / password: password123" style="-fx-font-size: 12; -fx-text-fill: #adb5bd;"/>
+            <Button text="Créer un admin" onAction="#openCreateAdmin" styleClass="login-btn"/>
+        </HBox>
     </VBox>
 </VBox>

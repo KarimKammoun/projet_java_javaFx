@@ -17,7 +17,7 @@
     </VBox>
 
     <!-- Statistics Cards -->
-    <HBox spacing="15">
+    <HBox spacing="12">
         <!-- Total Books -->
         <VBox styleClass="stat-card" HBox.hgrow="ALWAYS" style="-fx-padding: 20;">
             <HBox spacing="12">
