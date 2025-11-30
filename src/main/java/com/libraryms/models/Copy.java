@@ -1,4 +1,4 @@
-package com.libraryms.model;
+package com.libraryms.models;
 
 public class Copy {
     private final String copyId;

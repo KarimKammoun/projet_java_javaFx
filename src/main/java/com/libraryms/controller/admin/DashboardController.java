@@ -14,15 +14,23 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import com.libraryms.dao.BorrowingDAO;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import com.libraryms.dao.BorrowingDAO;
 
 public class DashboardController {
 
     @FXML private Label totalBooks, totalCopies, availableCopies, totalMembers, activeBorrowings;
     @FXML private TableView<Borrowing> recentTable;
     @FXML private LineChart<String, Number> trendChart;
+    @FXML private javafx.scene.control.TableColumn<Borrowing, String> recent_colCopyId;
+    @FXML private javafx.scene.control.TableColumn<Borrowing, String> recent_colMemberName;
+    @FXML private javafx.scene.control.TableColumn<Borrowing, java.time.LocalDate> recent_colBorrowDate;
+    @FXML private javafx.scene.control.TableColumn<Borrowing, java.time.LocalDate> recent_colDueDate;
+    @FXML private javafx.scene.control.TableColumn<Borrowing, String> recent_colStatus;
 
     @FXML
     private void initialize() {
@@ -33,12 +41,11 @@ public class DashboardController {
     }
 
     private void setupTable() {
-        var cols = recentTable.getColumns();
-        ((TableColumn<Borrowing, String>) cols.get(0)).setCellValueFactory(new PropertyValueFactory<>("copyId"));
-        ((TableColumn<Borrowing, String>) cols.get(1)).setCellValueFactory(new PropertyValueFactory<>("memberName"));
-        ((TableColumn<Borrowing, LocalDate>) cols.get(2)).setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
-        ((TableColumn<Borrowing, LocalDate>) cols.get(3)).setCellValueFactory(new PropertyValueFactory<>("dueDate"));
-        ((TableColumn<Borrowing, String>) cols.get(4)).setCellValueFactory(new PropertyValueFactory<>("status"));
+        recent_colCopyId.setCellValueFactory(new PropertyValueFactory<>("copyId"));
+        recent_colMemberName.setCellValueFactory(new PropertyValueFactory<>("memberName"));
+        recent_colBorrowDate.setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
+        recent_colDueDate.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+        recent_colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
     }
 
     private void loadStats() {
@@ -102,29 +109,23 @@ public class DashboardController {
             return;
         }
 
-        try (var conn = DatabaseUtil.connect();
-             var pst = conn.prepareStatement(
-                     "SELECT c.copy_id, u.name, b.borrow_date, b.due_date, b.status " +
-                             "FROM borrowing b " +
-                             "JOIN copies c ON b.copy_id = c.copy_id " +
-                             "JOIN users u ON b.user_phone = u.phone " +
-                             "WHERE b.admin_id = ? " +
-                             "ORDER BY b.borrow_date DESC LIMIT 5")) {
-            pst.setInt(1, adminId);
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
+        try {
+            BorrowingDAO dao = new BorrowingDAO();
+            List<com.libraryms.models.Borrowing> rows = dao.listByAdmin(adminId);
+            int added = 0;
+            for (com.libraryms.models.Borrowing r : rows) {
+                if (added++ >= 5) break;
                 try {
-                    String borrowDateStr = rs.getString(3);
-                    String dueDateStr = rs.getString(4);
-                    LocalDate borrowDate = LocalDate.parse(borrowDateStr);
-                    LocalDate dueDate = LocalDate.parse(dueDateStr);
                     list.add(new Borrowing(
-                            rs.getString(1), rs.getString(2),
-                            borrowDate, dueDate,
-                            rs.getString(5)
+                            r.getCopyId(),
+                            // use member name from model
+                            r.getMemberName() == null ? r.getMemberPhone() : r.getMemberName(),
+                            r.getBorrowDate(),
+                            r.getDueDate(),
+                            r.getStatus()
                     ));
                 } catch (Exception e) {
-                    System.err.println("Date parsing error: " + e.getMessage());
+                    System.err.println("Date mapping error: " + e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -143,31 +144,23 @@ public class DashboardController {
             return;
         }
 
-        try (var conn = DatabaseUtil.connect();
-             var pst = conn.prepareStatement(
-                     "SELECT DATE(borrow_date) as borrow_day, COUNT(*) as count " +
-                             "FROM borrowing " +
-                             "WHERE admin_id = ? AND borrow_date >= date('now', '-29 days') " +
-                             "GROUP BY DATE(borrow_date) " +
-                             "ORDER BY borrow_day DESC LIMIT 30")) {
-            pst.setInt(1, adminId);
-            ResultSet rs = pst.executeQuery();
-            
-            Map<String, Integer> dailyData = new HashMap<>();
-            while (rs.next()) {
-                String date = rs.getString(1);
-                int count = rs.getInt(2);
-                dailyData.put(date, count);
-            }
+        try {
+            BorrowingDAO dao = new BorrowingDAO();
+            // show last 6 months
+            int monthsBack = 6;
+            List<Map.Entry<String, Integer>> counts = dao.listBorrowingCountsPerMonth(adminId, monthsBack);
 
-            // Add data to chart (last 30 days)
-            LocalDate today = LocalDate.now();
-            for (int i = 29; i >= 0; i--) {
-                LocalDate date = today.minusDays(i);
-                String dateStr = date.toString();
-                int count = dailyData.getOrDefault(dateStr, 0);
-                String label = String.format("%d/%d", date.getMonthValue(), date.getDayOfMonth());
-                series.getData().add(new XYChart.Data<>(label, count));
+            // Build a map for quick lookup
+            Map<String, Integer> monthly = new HashMap<>();
+            for (var e : counts) monthly.put(e.getKey(), e.getValue());
+
+            LocalDate now = LocalDate.now();
+            for (int i = monthsBack - 1; i >= 0; i--) {
+                LocalDate m = now.minusMonths(i);
+                String ym = String.format("%04d-%02d", m.getYear(), m.getMonthValue());
+                int value = monthly.getOrDefault(ym, 0);
+                String label = String.format("%d/%02d", m.getMonthValue(), m.getYear());
+                series.getData().add(new XYChart.Data<>(label, value));
             }
         } catch (Exception e) {
             e.printStackTrace();

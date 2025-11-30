@@ -1,6 +1,7 @@
 package com.libraryms.controller.admin;
 
-import com.libraryms.util.DatabaseUtil;
+import com.libraryms.dao.MemberDAO;
+import com.libraryms.models.Member;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -76,24 +77,14 @@ public class MembersController {
 
     private void loadMembers() {
         var list = FXCollections.<Member>observableArrayList();
-        try (var conn = DatabaseUtil.connect()) {
+        try {
             Integer adminId = com.libraryms.util.Session.getAdminId();
             if (adminId == null) {
                 System.err.println("No admin logged in");
                 return;
             }
-            var ps = conn.prepareStatement("SELECT phone, name, email, type, cin FROM users WHERE admin_id = ?");
-            ps.setInt(1, adminId);
-            var rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(new Member(
-                        rs.getString("phone"),
-                        rs.getString("cin"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("type")
-                ));
-            }
+            MemberDAO dao = new MemberDAO();
+            list.addAll(dao.listByAdmin(adminId));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -208,17 +199,5 @@ public class MembersController {
             e.printStackTrace();
             new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "Erreur: " + e.getMessage()).showAndWait();
         }
-    }
-    
-    public static class Member {
-        private final String phone, cin, name, email, type;
-        public Member(String phone, String cin, String name, String email, String type) {
-            this.phone = phone; this.cin = cin; this.name = name; this.email = email; this.type = type;
-        }
-        public String getPhone() { return phone; }
-        public String getCin() { return cin; }
-        public String getName() { return name; }
-        public String getEmail() { return email; }
-        public String getType() { return type; }
     }
 }

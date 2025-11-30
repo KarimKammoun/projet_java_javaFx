@@ -1,6 +1,8 @@
 package com.libraryms.controller.admin;
 
 import com.libraryms.util.DatabaseUtil;
+import com.libraryms.dao.BorrowingDAO;
+import com.libraryms.models.BorrowingRecord;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -10,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import com.libraryms.dao.BorrowingDAO;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.LocalDate;
@@ -17,6 +20,13 @@ import java.time.LocalDate;
 public class BorrowingsController {
 
     @FXML private TableView<BorrowingAdmin> borrowingsTable;
+    @FXML private TableColumn<BorrowingAdmin, Integer> borrow_colId;
+    @FXML private TableColumn<BorrowingAdmin, String> borrow_colCopyId;
+    @FXML private TableColumn<BorrowingAdmin, String> borrow_colBookTitle;
+    @FXML private TableColumn<BorrowingAdmin, String> borrow_colMemberName;
+    @FXML private TableColumn<BorrowingAdmin, LocalDate> borrow_colBorrowDate;
+    @FXML private TableColumn<BorrowingAdmin, LocalDate> borrow_colDueDate;
+    @FXML private TableColumn<BorrowingAdmin, String> borrow_colStatus;
     @FXML private TextField searchField;
     @FXML private javafx.scene.control.ChoiceBox<String> searchColumnChoice;
 
@@ -24,14 +34,13 @@ public class BorrowingsController {
 
     @FXML
     private void initialize() {
-        var cols = borrowingsTable.getColumns();
-        ((TableColumn<BorrowingAdmin, Integer>) cols.get(0)).setCellValueFactory(new PropertyValueFactory<>("id"));
-        ((TableColumn<BorrowingAdmin, String>) cols.get(1)).setCellValueFactory(new PropertyValueFactory<>("copyId"));
-        ((TableColumn<BorrowingAdmin, String>) cols.get(2)).setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
-        ((TableColumn<BorrowingAdmin, String>) cols.get(3)).setCellValueFactory(new PropertyValueFactory<>("memberName"));
-        ((TableColumn<BorrowingAdmin, LocalDate>) cols.get(4)).setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
-        ((TableColumn<BorrowingAdmin, LocalDate>) cols.get(5)).setCellValueFactory(new PropertyValueFactory<>("dueDate"));
-        ((TableColumn<BorrowingAdmin, String>) cols.get(6)).setCellValueFactory(new PropertyValueFactory<>("status"));
+        borrow_colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        borrow_colCopyId.setCellValueFactory(new PropertyValueFactory<>("copyId"));
+        borrow_colBookTitle.setCellValueFactory(new PropertyValueFactory<>("bookTitle"));
+        borrow_colMemberName.setCellValueFactory(new PropertyValueFactory<>("memberName"));
+        borrow_colBorrowDate.setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
+        borrow_colDueDate.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+        borrow_colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         loadBorrowings();
 
         if (searchColumnChoice != null) searchColumnChoice.getSelectionModel().select("All");
@@ -81,55 +90,19 @@ public class BorrowingsController {
 
     private void loadBorrowings() {
         var list = FXCollections.<BorrowingAdmin>observableArrayList();
-        try (var conn = DatabaseUtil.connect()) {
+        try {
             Integer adminId = com.libraryms.util.Session.getAdminId();
             if (adminId == null) {
                 System.err.println("No admin logged in");
                 return;
             }
-            boolean hasBookTitle = false;
-            try (var pragmaStmt = conn.createStatement();
-                 var prs = pragmaStmt.executeQuery("PRAGMA table_info('borrowing')")) {
-                while (prs.next()) {
-                    String name = prs.getString("name");
-                    if ("book_title".equalsIgnoreCase(name)) { hasBookTitle = true; break; }
-                }
-            }
 
-            String sql;
-            if (hasBookTitle) {
-                sql = "SELECT b.id, b.copy_id, b.book_title, u.name, b.borrow_date, b.due_date, b.status " +
-                        "FROM borrowing b JOIN users u ON b.user_phone = u.phone WHERE b.admin_id = ?";
-            } else {
-                sql = "SELECT b.id, b.copy_id, k.title AS book_title, u.name, b.borrow_date, b.due_date, b.status " +
-                        "FROM borrowing b " +
-                        "JOIN copies c ON b.copy_id = c.copy_id " +
-                        "JOIN books k ON c.isbn = k.isbn " +
-                        "JOIN users u ON b.user_phone = u.phone WHERE b.admin_id = ?";
-            }
-
-            try (var ps = conn.prepareStatement(sql)) {
-                ps.setInt(1, adminId);
-                var rs = ps.executeQuery();
-                while (rs.next()) {
-                    try {
-                        String borrowDateStr = rs.getString("borrow_date");
-                        String dueDateStr = rs.getString("due_date");
-                        LocalDate borrowDate = LocalDate.parse(borrowDateStr);
-                        LocalDate dueDate = LocalDate.parse(dueDateStr);
-                        list.add(new BorrowingAdmin(
-                                rs.getInt("id"),
-                                rs.getString("copy_id"),
-                                rs.getString("book_title"),
-                                rs.getString("name"),
-                                borrowDate,
-                                dueDate,
-                                rs.getString("status")
-                        ));
-                    } catch (Exception e) {
-                        System.err.println("Date parsing error: " + e.getMessage());
-                    }
-                }
+            BorrowingDAO dao = new BorrowingDAO();
+            java.util.List<BorrowingRecord> rows = dao.listAdminRecords(adminId);
+            for (BorrowingRecord r : rows) {
+                list.add(new BorrowingAdmin(
+                        r.getId(), r.getCopyId(), r.getBookTitle(), r.getMemberName(), r.getBorrowDate(), r.getDueDate(), r.getStatus()
+                ));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -194,38 +167,48 @@ public class BorrowingsController {
 
     @FXML
     private void deleteSelectedBorrowing() {
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/delete_borrowing.fxml"));
-            javafx.scene.Parent root = loader.load();
-            javafx.scene.Scene scene = new javafx.scene.Scene(root);
-            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
-            javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("Supprimer un emprunt");
-            stage.setScene(scene);
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-            loadBorrowings();
-        } catch (Exception e) {
-            e.printStackTrace();
-            new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "Erreur: " + e.getMessage()).showAndWait();
+        var sel = borrowingsTable.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING, "Veuillez sélectionner un emprunt à supprimer.").showAndWait();
+            return;
+        }
+
+        var confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION, "Supprimer l'emprunt ID " + sel.getId() + " ?", javafx.scene.control.ButtonType.YES, javafx.scene.control.ButtonType.NO);
+        var res = confirm.showAndWait();
+        if (res.isPresent() && res.get() == javafx.scene.control.ButtonType.YES) {
+            try {
+                BorrowingDAO dao = new BorrowingDAO();
+                dao.deleteById(sel.getId());
+                new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION, "Emprunt supprimé.").showAndWait();
+                loadBorrowings();
+            } catch (Exception e) {
+                e.printStackTrace();
+                new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "Erreur: " + e.getMessage()).showAndWait();
+            }
         }
     }
 
     @FXML
     private void markSelectedReceived() {
-        try {
-            var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/pop_up/mark_received.fxml"));
-            javafx.scene.Parent root = loader.load();
-            var scene = new javafx.scene.Scene(root);
-            com.libraryms.util.SceneManager.applyGlobalStyles(scene);
-            var stage = new javafx.stage.Stage();
-            stage.setTitle("Mark Received");
-            stage.setScene(scene);
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-            loadBorrowings();
-        } catch (Exception e) {
-            e.printStackTrace();
+        var sel = borrowingsTable.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING, "Veuillez sélectionner un emprunt à marquer comme reçu.").showAndWait();
+            return;
+        }
+
+        var confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION, "Marquer la copie " + sel.getCopyId() + " comme reçue ?", javafx.scene.control.ButtonType.YES, javafx.scene.control.ButtonType.NO);
+        var res = confirm.showAndWait();
+        if (res.isPresent() && res.get() == javafx.scene.control.ButtonType.YES) {
+            try {
+                BorrowingDAO dao = new BorrowingDAO();
+                // mark returned by copy id; DAO will set return_date and status and restore counts
+                dao.markReturnedByCopy(sel.getCopyId(), null);
+                new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION, "Emprunt marqué comme reçu.").showAndWait();
+                loadBorrowings();
+            } catch (Exception e) {
+                e.printStackTrace();
+                new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "Erreur: " + e.getMessage()).showAndWait();
+            }
         }
     }
 

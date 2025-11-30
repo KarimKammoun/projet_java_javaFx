@@ -1,6 +1,9 @@
 package com.libraryms.controller.login;
 
-import com.libraryms.util.DatabaseUtil;
+import com.libraryms.dao.AdminDAO;
+import com.libraryms.dao.MemberDAO;
+import com.libraryms.models.Admin;
+import com.libraryms.models.Member;
 import com.libraryms.util.SceneManager;
 import com.libraryms.util.Session;
 import at.favre.lib.crypto.bcrypt.BCrypt;
@@ -65,29 +68,17 @@ public class LoginController {
     }
 
     private void loginAsAdmin(String email, String password) {
-        try (var conn = DatabaseUtil.connect();
-            var stmt = conn.prepareStatement("SELECT id, email, password, name FROM admin WHERE email = ?")) {
-            stmt.setString(1, email);
-            var rs = stmt.executeQuery();
-            if (rs.next()) {
-                String stored = rs.getString("password");
-                boolean ok = false;
-                // support legacy plain-text seed and hashed passwords
-                if (stored != null && stored.equals(password)) {
-                    ok = true;
-                } else {
-                    try {
-                        ok = at.favre.lib.crypto.bcrypt.BCrypt.verifyer().verify(password.toCharArray(), stored).verified;
-                    } catch (Exception ex) {
-                        ok = false;
-                    }
-                }
-                if (ok) {
+        try {
+            AdminDAO dao = new AdminDAO();
+            Admin admin = dao.findByEmail(email);
+            
+            if (admin != null) {
+                if (dao.verifyPassword(admin, password)) {
                     Session.setAdmin(true);
-                    Session.setEmail(rs.getString("email"));
-                    Session.setName(rs.getString("name"));
+                    Session.setEmail(admin.getEmail());
+                    Session.setName(admin.getName());
                     Session.setPhone(null);
-                    Session.setAdminId(rs.getInt("id"));
+                    Session.setAdminId(admin.getId());
                     SceneManager.loadScene("/fxml/admin/main_layout.fxml");
                 } else {
                     new Alert(Alert.AlertType.ERROR, "Mot de passe incorrect").show();
@@ -102,22 +93,27 @@ public class LoginController {
     }
 
     private void loginAsMember(String phone, String password) {
-        try (var conn = DatabaseUtil.connect();
-            var stmt = conn.prepareStatement("SELECT phone, name, email, password, admin_id FROM users WHERE phone = ?")) {
-            stmt.setString(1, phone);
-            var rs = stmt.executeQuery();
-            if (rs.next()) {
-                String storedHashedPassword = rs.getString("password");
-                // Verify the password against the hashed password in the DB
-                if (storedHashedPassword != null && BCrypt.verifyer().verify(password.toCharArray(), storedHashedPassword).verified) {
+        try {
+            MemberDAO dao = new MemberDAO();
+            Member member = dao.findByPhone(phone);
+            
+            if (member != null) {
+                // Verify password
+                boolean ok = false;
+                String stored = member.getPasswordHash();
+                if (stored != null && BCrypt.verifyer().verify(password.toCharArray(), stored).verified) {
+                    ok = true;
+                }
+                
+                if (ok) {
                     Session.setAdmin(false);
-                    Session.setEmail(rs.getString("email"));
-                    Session.setName(rs.getString("name"));
-                    Session.setPhone(rs.getString("phone"));
+                    Session.setEmail(member.getEmail());
+                    Session.setName(member.getName());
+                    Session.setPhone(member.getPhone());
                     // set the admin id the member belongs to so member views are scoped
                     try {
-                        int aId = rs.getInt("admin_id");
-                        if (!rs.wasNull()) Session.setAdminId(aId); else Session.setAdminId(null);
+                        Integer aId = member.getAdminId();
+                        Session.setAdminId(aId);
                     } catch (Exception ex) {
                         Session.setAdminId(null);
                     }

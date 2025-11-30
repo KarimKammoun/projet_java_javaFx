@@ -1,4 +1,4 @@
-package com.libraryms.model;
+package com.libraryms.models;
 
 import java.time.LocalDate;
 

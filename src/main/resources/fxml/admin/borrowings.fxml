@@ -36,13 +36,13 @@
         </HBox>
         <TableView fx:id="borrowingsTable" prefHeight="500">
             <columns>
-                <TableColumn text="ID" prefWidth="60"/>
-                <TableColumn text="Copy ID" prefWidth="120"/>
-                <TableColumn text="Book Title" prefWidth="220"/>
-                <TableColumn text="Member" prefWidth="180"/>
-                <TableColumn text="Borrow Date" prefWidth="120"/>
-                <TableColumn text="Due Date" prefWidth="120"/>
-                <TableColumn text="Status" prefWidth="100"/>
+                <TableColumn fx:id="borrow_colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="borrow_colCopyId" text="Copy ID" prefWidth="120"/>
+                <TableColumn fx:id="borrow_colBookTitle" text="Book Title" prefWidth="220"/>
+                <TableColumn fx:id="borrow_colMemberName" text="Member" prefWidth="180"/>
+                <TableColumn fx:id="borrow_colBorrowDate" text="Borrow Date" prefWidth="120"/>
+                <TableColumn fx:id="borrow_colDueDate" text="Due Date" prefWidth="120"/>
+                <TableColumn fx:id="borrow_colStatus" text="Status" prefWidth="100"/>
             </columns>
         </TableView>
     </VBox>

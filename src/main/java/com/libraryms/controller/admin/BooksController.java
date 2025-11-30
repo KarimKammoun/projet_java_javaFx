@@ -1,6 +1,7 @@
 package com.libraryms.controller.admin;
 
-import com.libraryms.util.DatabaseUtil;
+import com.libraryms.dao.BookDAO;
+import com.libraryms.models.Book;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -147,44 +148,18 @@ public class BooksController {
 
     private void loadBooks() {
         var list = FXCollections.<Book>observableArrayList();
-        try (var conn = DatabaseUtil.connect()) {
+        try {
             Integer adminId = com.libraryms.util.Session.getAdminId();
             if (adminId == null) {
                 System.err.println("No admin logged in");
                 return;
             }
-            var ps = conn.prepareStatement("SELECT isbn, title, author, category, total_copies, available_copies FROM books WHERE admin_id = ?");
-            ps.setInt(1, adminId);
-            var rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(new Book(
-                        rs.getString("isbn"),
-                        rs.getString("title"),
-                        rs.getString("author"),
-                        rs.getString("category"),
-                        rs.getInt("total_copies"),
-                        rs.getInt("available_copies")
-                ));
-            }
+            BookDAO dao = new BookDAO();
+            list.addAll(dao.listByAdmin(adminId));
         } catch (Exception e) {
             e.printStackTrace();
         }
         masterData = list;
         booksTable.setItems(masterData);
-    }
-
-    public static class Book {
-        private final String isbn, title, author, category;
-        private final int totalCopies, availableCopies;
-        public Book(String isbn, String title, String author, String category, int totalCopies, int availableCopies) {
-            this.isbn = isbn; this.title = title; this.author = author; this.category = category;
-            this.totalCopies = totalCopies; this.availableCopies = availableCopies;
-        }
-        public String getIsbn() { return isbn; }
-        public String getTitle() { return title; }
-        public String getAuthor() { return author; }
-        public String getCategory() { return category; }
-        public int getTotalCopies() { return totalCopies; }
-        public int getAvailableCopies() { return availableCopies; }
     }
 }
