@@ -40,10 +40,7 @@
                 <TextField fx:id="borrowDurationField" text="14" GridPane.rowIndex="1" GridPane.columnIndex="1"
                            style="-fx-padding: 10 12; -fx-font-size: 13;" prefWidth="100"/>
 
-                <Label text="Fine per Day (TND)" GridPane.rowIndex="2" GridPane.columnIndex="0"
-                        style="-fx-text-fill: #374151; -fx-font-weight: 600; -fx-font-size: 13;"/>
-                <TextField fx:id="finePerDayField" text="2.0" GridPane.rowIndex="2" GridPane.columnIndex="1"
-                           style="-fx-padding: 10 12; -fx-font-size: 13;" prefWidth="100"/>
+
             </GridPane>
         </VBox>
 
@@ -68,21 +65,12 @@
                            style="-fx-padding: 10 12; -fx-font-size: 13;" prefWidth="100"/>
             </GridPane>
 
-            <HBox spacing="12" style="-fx-padding: 10;">
-                <Button text="💾 Save Settings" styleClass="btn-primary" style="-fx-padding: 10 20; -fx-font-size: 13;" onAction="#saveSettings"/>
-            </HBox>
         </VBox>
+        <HBox spacing="12" style="-fx-padding: 10;">
+            <Button text="💾 Save Settings" styleClass="btn-primary" style="-fx-padding: 10 20; -fx-font-size: 13;" onAction="#saveSettings"/>
+        </HBox>
 
-        <!-- Database Section -->
-        <VBox spacing="12" styleClass="card" style="-fx-padding: 20;">
-            <Label text="💾 Database Management" styleClass="card-title"/>
-            <Label text="Backup and restore your library data" styleClass="card-subtitle"/>
-            
-            <HBox spacing="12" style="-fx-padding: 10;">
-                <Button fx:id="importBtn" text="📥 Import Data" styleClass="btn-primary" style="-fx-padding: 10 20; -fx-font-size: 13;" onAction="#importData"/>
-                <Button fx:id="exportBtn" text="📤 Export Data" styleClass="btn-secondary" style="-fx-padding: 10 20; -fx-font-size: 13;" onAction="#exportData"/>
-            </HBox>
-        </VBox>
+
 
     </VBox>
 

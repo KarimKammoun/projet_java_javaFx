@@ -9,10 +9,7 @@
 
     <!-- Filter Tabs -->
     <HBox spacing="10" style="-fx-padding: 20 40 0 40;">
-        <Button text="Active" styleClass="btn btn-primary" onAction="#filterActive"/>
-        <Button text="Completed" styleClass="btn btn-secondary" onAction="#filterCompleted"/>
-        <Button text="Overdue" styleClass="btn btn-danger" onAction="#filterOverdue"/>
-        <Button text="All" styleClass="btn btn-secondary" onAction="#filterAll"/>
+
         <HBox HBox.hgrow="ALWAYS"/>
             <TextField fx:id="searchField" promptText="Search by book title..." HBox.hgrow="ALWAYS" style="-fx-max-width: 250;"/>
     </HBox>

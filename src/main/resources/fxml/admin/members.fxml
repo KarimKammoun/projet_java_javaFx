@@ -12,7 +12,7 @@
         <Label text="Members Management" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
         <HBox HBox.hgrow="ALWAYS"/>
         <Button fx:id="deleteMemberBtn" text="Delete Member" styleClass="btn btn-danger" onAction="#deleteSelectedMember"/>
-        <Button fx:id="addMemberBtn" text="Add Member" styleClass="btn btn-primary" onAction="#openAddMember"/>
+        <Button fx:id="addMemberBtn" text="Add Or Edit Member" styleClass="btn btn-primary" onAction="#openAddMember"/>
     </HBox>
 
     <VBox spacing="10" style="-fx-padding: 0 40;">

@@ -13,7 +13,7 @@
         <HBox HBox.hgrow="ALWAYS"/>
         <Button fx:id="deleteBorrowingBtn" text="Delete Borrowing" styleClass="btn btn-danger" onAction="#deleteSelectedBorrowing"/>
         <Button fx:id="markReceivedBtn" text="Mark Received" styleClass="btn btn-success" onAction="#markSelectedReceived"/>
-        <Button fx:id="newBorrowingBtn" text="New Borrowing" styleClass="btn btn-primary" onAction="#openAddBorrowing"/>
+        <Button fx:id="newBorrowingBtn" text="ADD Or Edit Borrowing" styleClass="btn btn-primary" onAction="#openAddBorrowing"/>
     </HBox>
 
     <VBox spacing="10" style="-fx-padding: 0 40;">
